@@ -1,16 +1,22 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_API_URL } from '$env/static/public';
 
 	let oil: String;
 	let egg: String;
 	let acid: String;
 	let mustard: String;
 
-	const API_URL = env.PUBLIC_API_URL;
 	const submitForm = async () => {
-		const buyUrl = `${API_URL}/buy`;
+		const buyUrl = `${PUBLIC_API_URL}/buy`;
 		console.log(buyUrl);
-		// const submit = await fetch(buyUrl, { method: 'POST', body: JSON.stringify({}) });
+		const submit = await fetch(buyUrl, {
+			method: 'POST',
+			body: JSON.stringify({ oil, egg, acid, mustard })
+		});
+
+		const data = await submit.json();
+
+		console.log(data);
 	};
 </script>
 
@@ -19,7 +25,7 @@
 
 <br />
 
-<form on:submit={submitForm}>
+<form on:submit|preventDefault={submitForm}>
 	<label for="cars">Choose an oil:</label>
 	<select name="oil" id="oil" bind:value={oil}>
 		<option value="peanut">Peanut</option>
