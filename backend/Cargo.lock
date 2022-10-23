@@ -835,6 +835,7 @@ dependencies = [
  "aws-config",
  "aws-sdk-dynamodb",
  "env_logger",
+ "http",
  "lambda_http",
  "lambda_runtime",
  "serde",

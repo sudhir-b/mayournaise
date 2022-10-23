@@ -1,5 +1,6 @@
 use aws_config;
 use aws_sdk_dynamodb::Client;
+use http::StatusCode;
 use lambda_http::{http::Method, run, service_fn, Body, Error, Request, RequestExt, Response};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -19,7 +20,7 @@ pub struct Inventory {
     pub items: Vec<InventoryItem>,
 }
 
-async fn get_inventory(client: Client) -> serde_json::Value {
+async fn get_inventory(client: Client) -> (serde_json::Value, StatusCode) {
     let items: Result<Vec<_>, _> = client
         .scan()
         .table_name("mayournaise-inventory")
@@ -44,7 +45,7 @@ async fn get_inventory(client: Client) -> serde_json::Value {
             inventory.items.push(inventory_item);
         }
     }
-    json!(inventory)
+    (json!(inventory), StatusCode::OK)
 }
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
@@ -58,19 +59,19 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
     let client = Client::new(&shared_config);
 
     // TODO: also return status code to pass through
-    let response_body = match method {
+    let (response_body, status_code) = match method {
         &Method::GET => match path.as_str() {
             INVENTORY => get_inventory(client).await,
-            _ => json!(format!("GET request: {path}")),
+            _ => (json!("Not found"), StatusCode::NOT_FOUND),
         },
         &Method::POST => match path {
-            _ => json!(format!("POST request: {path}")),
+            _ => (json!("Not found"), StatusCode::NOT_FOUND),
         },
-        _ => json!("Unsupported HTTP method"),
+        _ => (json!("Not found"), StatusCode::NOT_FOUND),
     };
 
     let resp = Response::builder()
-        .status(200)
+        .status(status_code)
         .header("access-control-allow-origin", "*")
         .header("content-type", "application/json")
         .body(response_body.to_string().into())
