@@ -5,13 +5,15 @@
 	let egg: String;
 	let acid: String;
 	let mustard: String;
+	let email_address: String;
 
 	const submitForm = async () => {
-		const buyUrl = `${PUBLIC_API_URL}/buy`;
+		const buyUrl = `${PUBLIC_API_URL}/order`;
 		console.log(buyUrl);
 		const submit = await fetch(buyUrl, {
 			method: 'POST',
-			body: JSON.stringify({ oil, egg, acid, mustard })
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({ oil, egg, acid, mustard, email_address })
 		});
 
 		const data = await submit.json();
@@ -26,47 +28,48 @@
 <br />
 
 <form on:submit|preventDefault={submitForm}>
-	<label for="cars">Choose an oil:</label>
-	<select name="oil" id="oil" bind:value={oil}>
-		<option value="peanut">Peanut</option>
-		<option value="sunflower">Sunflower</option>
-		<option value="rapeseed">Rapeseed</option>
-		<option value="olive">Olive</option>
-	</select>
+	<label>Choose an oil:
+		<select name="oil" id="oil" bind:value={oil}>
+			<option value="sunflower">Sunflower</option>
+			<option value="olive">Olive</option>
+		</select>
+	</label>
 
 	<br />
 	<br />
 
-	<label for="eggs">Choose egg:</label>
-	<select name="egg" id="egg" bind:value={egg}>
-		<option value="chicken_regular">Chicken (regular)</option>
-		<option value="chicken_fancy">Chicken (fancy)</option>
-		<option value="duck">Duck</option>
-	</select>
+	<label>Choose egg:
+		<select name="egg" id="egg" bind:value={egg}>
+			<option value="chicken">Chicken</option>
+			<option value="duck">Duck</option>
+		</select>
+	</label>
 
 	<br />
 	<br />
 
-	<label for="acids">Choose an acid:</label>
-	<select name="acid" id="acid" bind:value={acid}>
-		<option value="lemon_juice">Lemon juice</option>
-		<option value="lime_juice">Lime juice</option>
-		<option value="white_vinegar">White vinegar</option>
-		<option value="malt_vinegar">Malt vinegar</option>
-	</select>
+	<label>Choose an acid:
+		<select name="acid" id="acid" bind:value={acid}>
+			<option value="lemon_juice">Lemon juice</option>
+			<option value="white_vinegar">White vinegar</option>
+		</select>
+	</label>
+	<br />
+	<br />
+
+	<label>Choose a mustard:
+		<select name="mustard" id="mustard" bind:value={mustard}>
+			<option value="dijon">Dijon</option>
+			<option value="wholegrain">Whole grain</option>
+		</select>
+	</label>
 
 	<br />
 	<br />
 
-	<label for="mustards">Choose a mustard:</label>
-	<select name="mustard" id="mustard" bind:value={mustard}>
-		<option value="dijon">Dijon</option>
-		<option value="english">English</option>
-		<option value="whole_grain">Whole grain</option>
-	</select>
-
-	<br />
-	<br />
+	<label>Email address:
+  		<input type="text" id="email" name="email" bind:value={email_address}>
+	</label>
 
 	<button>Buy!</button>
 </form>

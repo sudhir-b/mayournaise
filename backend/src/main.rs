@@ -1,4 +1,5 @@
 use aws_config;
+use aws_sdk_dynamodb::model::{Put, TransactWriteItem, Update};
 use aws_sdk_dynamodb::{model::AttributeValue, Client};
 use http::StatusCode;
 use lambda_http::{http::Method, run, service_fn, Body, Error, Request, RequestExt, Response};
@@ -60,31 +61,82 @@ pub struct Order {
     pub mustard: String,
 }
 
-impl From<Order> for HashMap<String, AttributeValue> {
-    /// Convert Order into a DynamoDB item
-    fn from(value: Order) -> HashMap<String, AttributeValue> {
-        let mut retval = HashMap::new();
-        retval.insert("type".to_owned(), AttributeValue::S("order".to_owned()));
+impl Order {
+    /// Make a DynamoDB item for creating an order record
+    fn create_order(&self) -> HashMap<String, AttributeValue> {
+        let mut map = HashMap::new();
+        map.insert("type".to_string(), AttributeValue::S("order".to_string()));
 
         let now = SystemTime::now();
         let since_the_epoch = now.duration_since(UNIX_EPOCH).expect("Time went backwards");
         let in_ms =
             since_the_epoch.as_secs() * 1000 + since_the_epoch.subsec_nanos() as u64 / 1_000_000;
 
-        retval.insert("name".to_owned(), AttributeValue::S(in_ms.to_string()));
-        retval.insert(
-            "email_address".to_owned(),
-            AttributeValue::S(value.email_address.clone()),
+        map.insert("name".to_string(), AttributeValue::S(in_ms.to_string()));
+        map.insert(
+            "email_address".to_string(),
+            AttributeValue::S(self.email_address.clone()),
         );
-        retval.insert("oil".to_owned(), AttributeValue::S(value.oil.clone()));
-        retval.insert("egg".to_owned(), AttributeValue::S(value.egg.clone()));
-        retval.insert("acid".to_owned(), AttributeValue::S(value.acid.clone()));
-        retval.insert(
-            "mustard".to_owned(),
-            AttributeValue::S(value.mustard.clone()),
+        map.insert("oil".to_string(), AttributeValue::S(self.oil.clone()));
+        map.insert("egg".to_string(), AttributeValue::S(self.egg.clone()));
+        map.insert("acid".to_string(), AttributeValue::S(self.acid.clone()));
+        map.insert(
+            "mustard".to_string(),
+            AttributeValue::S(self.mustard.clone()),
         );
 
-        retval
+        map
+    }
+
+    fn update_ingredient(&self, keys: HashMap<String, AttributeValue>) -> Update {
+        Update::builder()
+            .table_name("mayournaise-inventory")
+            .set_key(Some(keys))
+            .expression_attribute_names("#stock", "stock")
+            .expression_attribute_values(":zeroValue", AttributeValue::N(0.to_string()))
+            .condition_expression("#stock > :zeroValue")
+            .expression_attribute_values(":value", AttributeValue::N(1.to_string()))
+            .update_expression("SET #stock = #stock - :value")
+            .build()
+    }
+
+    fn update_oil(&self) -> Update {
+        let keys = HashMap::from([
+            (String::from("type"), AttributeValue::S("oil".to_string())),
+            (String::from("name"), AttributeValue::S(self.oil.clone())),
+        ]);
+        self.update_ingredient(keys)
+    }
+
+    fn update_egg(&self) -> Update {
+        let keys = HashMap::from([
+            (String::from("type"), AttributeValue::S("egg".to_string())),
+            (String::from("name"), AttributeValue::S(self.egg.clone())),
+        ]);
+        self.update_ingredient(keys)
+    }
+
+    fn update_acid(&self) -> Update {
+        let keys = HashMap::from([
+            (String::from("type"), AttributeValue::S("acid".to_string())),
+            (String::from("name"), AttributeValue::S(self.acid.clone())),
+        ]);
+        self.update_ingredient(keys)
+    }
+
+    fn update_mustard(&self) -> Update {
+        let keys = HashMap::from([
+            (
+                String::from("type"),
+                AttributeValue::S("mustard".to_string()),
+            ),
+            (
+                String::from("name"),
+                AttributeValue::S(self.mustard.clone()),
+            ),
+        ]);
+
+        self.update_ingredient(keys)
     }
 }
 
@@ -103,19 +155,47 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         }
     };
 
-    // TODO: make order
-    // TODO: update inventory
-
-    let update_items_table_res = client
-        .put_item()
-        .table_name("mayournaise-inventory")
-        .set_item(Some(order_request.into()))
+    let transaction_result = client
+        .transact_write_items()
+        .transact_items(
+            TransactWriteItem::builder()
+                .put(
+                    Put::builder()
+                        .table_name("mayournaise-inventory")
+                        .set_item(Some(order_request.create_order()))
+                        .build(),
+                )
+                .build(),
+        )
+        .transact_items(
+            TransactWriteItem::builder()
+                .update(order_request.update_oil())
+                .build(),
+        )
+        .transact_items(
+            TransactWriteItem::builder()
+                .update(order_request.update_egg())
+                .build(),
+        )
+        .transact_items(
+            TransactWriteItem::builder()
+                .update(order_request.update_acid())
+                .build(),
+        )
+        .transact_items(
+            TransactWriteItem::builder()
+                .update(order_request.update_mustard())
+                .build(),
+        )
         .send()
         .await;
 
-    println!("{:?}", update_items_table_res);
+    println!("{:?}", transaction_result);
 
-    (json!("order made!"), StatusCode::OK)
+    match transaction_result {
+        Ok(_) => (json!(""), StatusCode::CREATED),
+        Err(_) => (json!(""), StatusCode::BAD_REQUEST),
+    }
 }
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
@@ -139,7 +219,6 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
 
     let resp = Response::builder()
         .status(status_code)
-        .header("access-control-allow-origin", "*")
         .header("content-type", "application/json")
         .body(response_body.to_string().into())
         .map_err(Box::new)?;

@@ -45,3 +45,14 @@ cargo lambda deploy --enable-function-url mayournaise --profile personal --iam-r
 
 
 function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
+
+click ops:
+ - add cors to function url
+ - allow content-type header
+ - allow lambda function to touch dynamodb
+
+
+## TODO
+
+- use GET request to populate form options on frontend
+- make frontend pretty
