@@ -8,18 +8,27 @@
   let mustard;
   let email_address;
 
+  let button_disabled = false;
+  let button_text = "Reserve!";
+
   const submitForm = async () => {
+    button_disabled = true;
+
     const buyUrl = `${PUBLIC_API_URL}/order`;
     console.log(buyUrl);
-    const submit = await fetch(buyUrl, {
+    const submitResponse = await fetch(buyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ oil, egg, acid, mustard, email_address }),
     });
 
-    const data = await submit.json();
-
-    console.log(data);
+    if (submitResponse.ok) {
+      const data = await submitResponse.json();
+      console.log(data);
+      button_text = "Submitted!";
+    } else {
+      button_disabled = false;
+    }
   };
 
   let inventory;
@@ -51,64 +60,64 @@
 <br />
 
 {#if inventory}
-  <form on:submit|preventDefault={submitForm}>
-    <label
-      >Choose an oil:
-      <select name="oil" id="oil" bind:value={oil}>
-        {#each inventory.oil as oil}
-          <option value={oil}>{oil}</option>
-        {/each}
-      </select>
-    </label>
+  <label
+    >Choose an oil:
+    <select name="oil" id="oil" bind:value={oil}>
+      {#each inventory.oil as oil}
+        <option value={oil}>{oil}</option>
+      {/each}
+    </select>
+  </label>
 
-    <br />
-    <br />
+  <br />
+  <br />
 
-    <label
-      >Choose egg:
-      <select name="egg" id="egg" bind:value={egg}>
-        {#each inventory.egg as egg}
-          <option value={egg}>{egg}</option>
-        {/each}
-      </select>
-    </label>
+  <label
+    >Choose egg:
+    <select name="egg" id="egg" bind:value={egg}>
+      {#each inventory.egg as egg}
+        <option value={egg}>{egg}</option>
+      {/each}
+    </select>
+  </label>
 
-    <br />
-    <br />
+  <br />
+  <br />
 
-    <label
-      >Choose an acid:
-      <select name="acid" id="acid" bind:value={acid}>
-        {#each inventory.acid as acid}
-          <option value={acid}>{acid}</option>
-        {/each}
-      </select>
-    </label>
-    <br />
-    <br />
+  <label
+    >Choose an acid:
+    <select name="acid" id="acid" bind:value={acid}>
+      {#each inventory.acid as acid}
+        <option value={acid}>{acid}</option>
+      {/each}
+    </select>
+  </label>
+  <br />
+  <br />
 
-    <label
-      >Choose a mustard:
-      <select name="mustard" id="mustard" bind:value={mustard}>
-        {#each inventory.mustard as mustard}
-          <option value={mustard}>{mustard}</option>
-        {/each}
-      </select>
-    </label>
+  <label
+    >Choose a mustard:
+    <select name="mustard" id="mustard" bind:value={mustard}>
+      {#each inventory.mustard as mustard}
+        <option value={mustard}>{mustard}</option>
+      {/each}
+    </select>
+  </label>
 
-    <br />
-    <br />
+  <br />
+  <br />
 
-    <label
-      >Email address:
-      <input type="text" id="email" name="email" bind:value={email_address} />
-    </label>
+  <label
+    >Email address:
+    <input type="text" id="email" name="email" bind:value={email_address} />
+  </label>
 
-    <br />
-    <br />
+  <br />
+  <br />
 
-    <button>Reserve!</button>
-  </form>
+  <button on:click={submitForm} disabled={button_disabled}>
+    {button_text}
+  </button>
 {:else}
   <p class="loading">loading...</p>
 {/if}
