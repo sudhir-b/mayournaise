@@ -66,3 +66,4 @@ click ops:
 - order confirmation on frontend?
 - per-email limit on ordering?
 - grey-out or mark as sold out if stock is 0 on frontend
+- do email address validation on front & backend
