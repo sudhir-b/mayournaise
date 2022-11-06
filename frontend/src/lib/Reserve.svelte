@@ -40,7 +40,22 @@
         transformed[item["item_type"]] = [];
       }
 
-      transformed[item["item_type"]].push(item["item_name"]);
+      let name = item["item_name"];
+      if (item["stock"] === 0) {
+        name = `${item["item_name"]} - sold out`;
+      }
+
+      transformed[item["item_type"]].push({
+        name: name,
+        stock: item["stock"],
+      });
+    }
+
+    const keys = Object.keys(transformed);
+    for (const key of keys) {
+      transformed[key].sort(function (a, b) {
+        return b.stock - a.stock;
+      });
     }
 
     return transformed;
@@ -49,6 +64,7 @@
   fetch(`${PUBLIC_API_URL}/inventory`)
     .then((r) => r.json())
     .then((data) => {
+      console.log(data);
       inventory = transform(data);
       console.log(inventory);
     });
@@ -64,7 +80,7 @@
     >Choose an oil:
     <select name="oil" id="oil" bind:value={oil}>
       {#each inventory.oil as oil}
-        <option value={oil}>{oil}</option>
+        <option value={oil.name} disabled={oil.stock === 0}>{oil.name}</option>
       {/each}
     </select>
   </label>
@@ -76,7 +92,7 @@
     >Choose egg:
     <select name="egg" id="egg" bind:value={egg}>
       {#each inventory.egg as egg}
-        <option value={egg}>{egg}</option>
+        <option value={egg.name} disabled={egg.stock === 0}>{egg.name}</option>
       {/each}
     </select>
   </label>
@@ -88,7 +104,9 @@
     >Choose an acid:
     <select name="acid" id="acid" bind:value={acid}>
       {#each inventory.acid as acid}
-        <option value={acid}>{acid}</option>
+        <option value={acid.name} disabled={acid.stock === 0}
+          >{acid.name}</option
+        >
       {/each}
     </select>
   </label>
@@ -99,7 +117,9 @@
     >Choose a mustard:
     <select name="mustard" id="mustard" bind:value={mustard}>
       {#each inventory.mustard as mustard}
-        <option value={mustard}>{mustard}</option>
+        <option value={mustard.name} disabled={mustard.stock === 0}
+          >{mustard.name}</option
+        >
       {/each}
     </select>
   </label>
