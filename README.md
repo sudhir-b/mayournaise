@@ -55,3 +55,6 @@ click ops:
 ## TODO
 - make frontend pretty
 - low stock indicators?
+- monitoring for Lambda function usage
+- randomise button for options
+- update/change favicon
