@@ -43,9 +43,6 @@
       inventory = transform(data);
       console.log(inventory);
     });
-
-  const snakeCaseToFirstLetterCapital = (s) =>
-    s.replace(/^_*(.)|_+(.)/g, (s, c, d) => (c ? c.toUpperCase() : " " + d));
 </script>
 
 <h1>Welcome to Mayournaise</h1>
@@ -59,7 +56,7 @@
       >Choose an oil:
       <select name="oil" id="oil" bind:value={oil}>
         {#each inventory.oil as oil}
-          <option value={oil}>{snakeCaseToFirstLetterCapital(oil)}</option>
+          <option value={oil}>{oil}</option>
         {/each}
       </select>
     </label>
@@ -71,7 +68,7 @@
       >Choose egg:
       <select name="egg" id="egg" bind:value={egg}>
         {#each inventory.egg as egg}
-          <option value={egg}>{snakeCaseToFirstLetterCapital(egg)}</option>
+          <option value={egg}>{egg}</option>
         {/each}
       </select>
     </label>
@@ -83,7 +80,7 @@
       >Choose an acid:
       <select name="acid" id="acid" bind:value={acid}>
         {#each inventory.acid as acid}
-          <option value={acid}>{snakeCaseToFirstLetterCapital(acid)}</option>
+          <option value={acid}>{acid}</option>
         {/each}
       </select>
     </label>
@@ -94,9 +91,7 @@
       >Choose a mustard:
       <select name="mustard" id="mustard" bind:value={mustard}>
         {#each inventory.mustard as mustard}
-          <option value={mustard}
-            >{snakeCaseToFirstLetterCapital(mustard)}</option
-          >
+          <option value={mustard}>{mustard}</option>
         {/each}
       </select>
     </label>
