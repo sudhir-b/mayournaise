@@ -54,3 +54,4 @@ click ops:
 
 ## TODO
 - make frontend pretty
+- low stock indicators?
