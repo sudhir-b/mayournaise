@@ -21,6 +21,31 @@
 
     console.log(data);
   };
+
+  let inventory;
+
+  const transform = (data) => {
+    let transformed = {};
+    for (const item of data.items) {
+      if (!transformed[item["item_type"]]) {
+        transformed[item["item_type"]] = [];
+      }
+
+      transformed[item["item_type"]].push(item["item_name"]);
+    }
+
+    return transformed;
+  };
+
+  fetch(`${PUBLIC_API_URL}/inventory`)
+    .then((r) => r.json())
+    .then((data) => {
+      inventory = transform(data);
+      console.log(inventory);
+    });
+
+  const snakeCaseToFirstLetterCapital = (s) =>
+    s.replace(/^_*(.)|_+(.)/g, (s, c, d) => (c ? c.toUpperCase() : " " + d));
 </script>
 
 <h1>Welcome to Mayournaise</h1>
@@ -28,57 +53,67 @@
 
 <br />
 
-<form on:submit|preventDefault={submitForm}>
-  <label
-    >Choose an oil:
-    <select name="oil" id="oil" bind:value={oil}>
-      <option value="sunflower">Sunflower</option>
-      <option value="olive">Olive</option>
-    </select>
-  </label>
+{#if inventory}
+  <form on:submit|preventDefault={submitForm}>
+    <label
+      >Choose an oil:
+      <select name="oil" id="oil" bind:value={oil}>
+        {#each inventory.oil as oil}
+          <option value={oil}>{snakeCaseToFirstLetterCapital(oil)}</option>
+        {/each}
+      </select>
+    </label>
 
-  <br />
-  <br />
+    <br />
+    <br />
 
-  <label
-    >Choose egg:
-    <select name="egg" id="egg" bind:value={egg}>
-      <option value="chicken">Chicken</option>
-      <option value="duck">Duck</option>
-    </select>
-  </label>
+    <label
+      >Choose egg:
+      <select name="egg" id="egg" bind:value={egg}>
+        {#each inventory.egg as egg}
+          <option value={egg}>{snakeCaseToFirstLetterCapital(egg)}</option>
+        {/each}
+      </select>
+    </label>
 
-  <br />
-  <br />
+    <br />
+    <br />
 
-  <label
-    >Choose an acid:
-    <select name="acid" id="acid" bind:value={acid}>
-      <option value="lemon_juice">Lemon juice</option>
-      <option value="white_vinegar">White vinegar</option>
-    </select>
-  </label>
-  <br />
-  <br />
+    <label
+      >Choose an acid:
+      <select name="acid" id="acid" bind:value={acid}>
+        {#each inventory.acid as acid}
+          <option value={acid}>{snakeCaseToFirstLetterCapital(acid)}</option>
+        {/each}
+      </select>
+    </label>
+    <br />
+    <br />
 
-  <label
-    >Choose a mustard:
-    <select name="mustard" id="mustard" bind:value={mustard}>
-      <option value="dijon">Dijon</option>
-      <option value="wholegrain">Whole grain</option>
-    </select>
-  </label>
+    <label
+      >Choose a mustard:
+      <select name="mustard" id="mustard" bind:value={mustard}>
+        {#each inventory.mustard as mustard}
+          <option value={mustard}
+            >{snakeCaseToFirstLetterCapital(mustard)}</option
+          >
+        {/each}
+      </select>
+    </label>
 
-  <br />
-  <br />
+    <br />
+    <br />
 
-  <label
-    >Email address:
-    <input type="text" id="email" name="email" bind:value={email_address} />
-  </label>
+    <label
+      >Email address:
+      <input type="text" id="email" name="email" bind:value={email_address} />
+    </label>
 
-  <br />
-  <br />
+    <br />
+    <br />
 
-  <button>Reserve!</button>
-</form>
+    <button>Reserve!</button>
+  </form>
+{:else}
+  <p class="loading">loading...</p>
+{/if}
