@@ -41,7 +41,7 @@ You can preview the production build with `npm run preview`.
 ## Lambda
 
 cargo lambda build --arm64 --release
-cargo lambda deploy --enable-function-url mayournaise --profile personal --iam-role arn:aws:iam::135929403262:role/cargo-lambda-role-d34c3685-2907-4595-b523-4e72417658a8
+cargo lambda deploy --enable-function-url mayournaise --profile personal
 
 
 function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
