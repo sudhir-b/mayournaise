@@ -62,3 +62,4 @@ click ops:
 - add disclaimers for taste & delivery & payment, etc.
 - allow ingredients to be requested to be added to options?
 - add ability to add extras like garlic, smoke, harissa, etc.
+- update README
