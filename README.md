@@ -58,3 +58,7 @@ click ops:
 - monitoring for Lambda function usage
 - randomise button for options
 - update/change favicon
+- deploy frontend somewhere
+- add disclaimers for taste & delivery & payment, etc.
+- allow ingredients to be requested to be added to options?
+- add ability to add extras like garlic, smoke, harissa, etc.
