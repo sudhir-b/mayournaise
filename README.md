@@ -63,3 +63,6 @@ click ops:
 - allow ingredients to be requested to be added to options?
 - add ability to add extras like garlic, smoke, harissa, etc.
 - update README
+- order confirmation on frontend?
+- per-email limit on ordering?
+- grey-out or mark as sold out if stock is 0 on frontend
