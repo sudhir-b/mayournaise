@@ -53,6 +53,4 @@ click ops:
 
 
 ## TODO
-
-- use GET request to populate form options on frontend
 - make frontend pretty
