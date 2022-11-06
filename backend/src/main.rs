@@ -65,17 +65,19 @@ impl Order {
     /// Make a DynamoDB item for creating an order record
     fn create_order(&self) -> HashMap<String, AttributeValue> {
         let mut map = HashMap::new();
-        map.insert("type".to_string(), AttributeValue::S("order".to_string()));
+        map.insert(
+            "email_address".to_string(),
+            AttributeValue::S(self.email_address.clone()),
+        );
 
         let now = SystemTime::now();
         let since_the_epoch = now.duration_since(UNIX_EPOCH).expect("Time went backwards");
         let in_ms =
             since_the_epoch.as_secs() * 1000 + since_the_epoch.subsec_nanos() as u64 / 1_000_000;
 
-        map.insert("name".to_string(), AttributeValue::S(in_ms.to_string()));
         map.insert(
-            "email_address".to_string(),
-            AttributeValue::S(self.email_address.clone()),
+            "timestamp".to_string(),
+            AttributeValue::N(in_ms.to_string()),
         );
         map.insert("oil".to_string(), AttributeValue::S(self.oil.clone()));
         map.insert("egg".to_string(), AttributeValue::S(self.egg.clone()));
@@ -161,7 +163,7 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
             TransactWriteItem::builder()
                 .put(
                     Put::builder()
-                        .table_name("mayournaise-inventory")
+                        .table_name("mayournaise-orders")
                         .set_item(Some(order_request.create_order()))
                         .build(),
                 )
