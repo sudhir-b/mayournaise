@@ -52,6 +52,11 @@ click ops:
  - allow lambda function to touch dynamodb
 
 
+## Frontend
+
+cd into frontend
+run `vercel --prod`
+
 ## TODO
 - make frontend pretty
 - low stock indicators?

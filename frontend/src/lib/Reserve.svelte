@@ -11,6 +11,8 @@
   let button_disabled = false;
   let button_text = "Reserve!";
 
+  let notification = "";
+
   const submitForm = async () => {
     button_disabled = true;
 
@@ -28,6 +30,7 @@
       button_text = "Submitted!";
     } else {
       button_disabled = false;
+      notification = "Something went wrong - try a different combination?"
     }
   };
 
@@ -138,6 +141,11 @@
   <button on:click={submitForm} disabled={button_disabled}>
     {button_text}
   </button>
+
+  <br />
+  <br />
+
+  {notification}
 {:else}
   <p class="loading">loading...</p>
 {/if}
