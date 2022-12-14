@@ -6,6 +6,7 @@ use lambda_http::{http::Method, run, service_fn, Body, Error, Request, RequestEx
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::collections::HashMap;
+use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tokio_stream::StreamExt;
 
@@ -55,6 +56,7 @@ async fn get_inventory(client: Client) -> (serde_json::Value, StatusCode) {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Order {
     pub email_address: String,
+    pub referral_code: String,
     pub oil: String,
     pub egg: String,
     pub acid: String,
@@ -157,6 +159,19 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         }
     };
 
+    let expected_referral_code_result = env::var("REFERRAL_CODE");
+    let expected_referral_code;
+
+    if expected_referral_code_result.is_err() {
+        return (json!(""), StatusCode::BAD_REQUEST);
+    } else {
+        expected_referral_code = expected_referral_code_result.unwrap()
+    }
+
+    if order_request.referral_code != expected_referral_code {
+        return (json!("Incorrect referral code"), StatusCode::BAD_REQUEST);
+    }
+
     let transaction_result = client
         .transact_write_items()
         .transact_items(
@@ -191,8 +206,6 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         )
         .send()
         .await;
-
-    println!("{:?}", transaction_result);
 
     match transaction_result {
         Ok(_) => (json!(""), StatusCode::CREATED),
