@@ -7,6 +7,7 @@
   let acid;
   let mustard;
   let email_address;
+  let referral_code;
 
   let button_disabled = false;
   let button_text = "Reserve!";
@@ -21,7 +22,14 @@
     const submitResponse = await fetch(buyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ oil, egg, acid, mustard, email_address }),
+      body: JSON.stringify({
+        oil,
+        egg,
+        acid,
+        mustard,
+        email_address,
+        referral_code,
+      }),
     });
 
     if (submitResponse.ok) {
@@ -30,7 +38,7 @@
       button_text = "Submitted!";
     } else {
       button_disabled = false;
-      notification = "Something went wrong - try a different combination?"
+      notification = "Something went wrong - try a different combination?";
     }
   };
 
@@ -132,7 +140,20 @@
 
   <label
     >Email address:
-    <input type="text" id="email" name="email" bind:value={email_address} />
+    <input type="email" id="email" name="email" bind:value={email_address} />
+  </label>
+
+  <br />
+  <br />
+
+  <label
+    >Referral code:
+    <input
+      type="password"
+      id="referral_code"
+      name="referral_code"
+      bind:value={referral_code}
+    />
   </label>
 
   <br />
@@ -141,6 +162,12 @@
   <button on:click={submitForm} disabled={button_disabled}>
     {button_text}
   </button>
+
+  <br />
+  <br />
+
+  Disclaimer: I hold no responsibility for the resulting taste of any
+  combination
 
   <br />
   <br />
