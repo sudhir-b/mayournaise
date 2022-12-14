@@ -50,6 +50,7 @@ click ops:
  - add cors to function url
  - allow content-type header
  - allow lambda function to touch dynamodb
+ - add env var REFERRAL_CODE to lambda
 
 
 ## Frontend
@@ -59,16 +60,12 @@ run `vercel --prod`
 
 ## TODO
 - make frontend pretty
-- low stock indicators?
 - monitoring for Lambda function usage
 - randomise button for options
 - update/change favicon
-- deploy frontend somewhere
 - add disclaimers for taste & delivery & payment, etc.
 - allow ingredients to be requested to be added to options?
 - add ability to add extras like garlic, smoke, harissa, etc.
 - update README
-- order confirmation on frontend?
 - per-email limit on ordering?
-- grey-out or mark as sold out if stock is 0 on frontend
 - do email address validation on front & backend
