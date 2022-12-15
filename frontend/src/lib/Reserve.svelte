@@ -38,7 +38,12 @@
       button_text = "Submitted!";
     } else {
       button_disabled = false;
-      notification = "Something went wrong - try a different combination?";
+      const data = await submitResponse.json();
+      if (data === "Invalid referral code") {
+        notification = "Invalid referral code";  
+      } else {
+        notification = "Something went wrong - try a different combination?";
+      }
     }
   };
 
@@ -159,6 +164,11 @@
   <br />
   <br />
 
+  {notification}
+
+  <br />
+  <br />
+
   <button on:click={submitForm} disabled={button_disabled}>
     {button_text}
   </button>
@@ -166,13 +176,14 @@
   <br />
   <br />
 
-  Disclaimer: I hold no responsibility for the resulting taste of any
-  combination
-
+  <b>Disclaimers:</b>
   <br />
+  I hold no responsibility for the resulting taste of any combination
   <br />
-
-  {notification}
+  For legal reasons, this isn't a food business
+  <br />
+  If I don't know you, you're unlikely to receive any mayo (sorry)
+  <br />
 {:else}
   <p class="loading">loading...</p>
 {/if}

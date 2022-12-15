@@ -169,7 +169,7 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
     }
 
     if order_request.referral_code != expected_referral_code {
-        return (json!("Incorrect referral code"), StatusCode::BAD_REQUEST);
+        return (json!("Invalid referral code"), StatusCode::BAD_REQUEST);
     }
 
     let transaction_result = client
