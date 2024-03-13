@@ -1,18 +1,4 @@
-# create-svelte
-
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+# Mayournaise
 
 ## Developing
 
@@ -63,9 +49,7 @@ run `vercel --prod`
 - monitoring for Lambda function usage
 - randomise button for options
 - update/change favicon
-- add disclaimers for taste & delivery & payment, etc.
 - allow ingredients to be requested to be added to options?
 - add ability to add extras like garlic, smoke, harissa, etc.
 - update README
 - per-email limit on ordering?
-- do email address validation on front & backend

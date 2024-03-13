@@ -1,4 +1,3 @@
-use aws_config;
 use aws_sdk_dynamodb::model::{Put, TransactWriteItem, Update};
 use aws_sdk_dynamodb::{model::AttributeValue, Client};
 use http::StatusCode;
@@ -6,7 +5,6 @@ use lambda_http::{http::Method, run, service_fn, Body, Error, Request, RequestEx
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::collections::HashMap;
-use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tokio_stream::StreamExt;
 
@@ -40,7 +38,7 @@ async fn get_inventory(client: Client) -> (serde_json::Value, StatusCode) {
 
     let mut inventory = Inventory { items: vec![] };
 
-    for item in items {
+    if let Ok(item) = items {
         for row in item {
             let inventory_item = InventoryItem {
                 item_type: row.get("type").unwrap().as_s().unwrap().to_string(),
@@ -56,7 +54,6 @@ async fn get_inventory(client: Client) -> (serde_json::Value, StatusCode) {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Order {
     pub email_address: String,
-    pub referral_code: String,
     pub oil: String,
     pub egg: String,
     pub acid: String,
@@ -159,19 +156,6 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         }
     };
 
-    let expected_referral_code_result = env::var("REFERRAL_CODE");
-    let expected_referral_code;
-
-    if expected_referral_code_result.is_err() {
-        return (json!(""), StatusCode::BAD_REQUEST);
-    } else {
-        expected_referral_code = expected_referral_code_result.unwrap()
-    }
-
-    if order_request.referral_code != expected_referral_code {
-        return (json!("Invalid referral code"), StatusCode::BAD_REQUEST);
-    }
-
     let transaction_result = client
         .transact_write_items()
         .transact_items(
@@ -220,12 +204,12 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
     let client = Client::new(&shared_config);
 
     // TODO: also return status code to pass through
-    let (response_body, status_code) = match method {
-        &Method::GET => match path.as_str() {
+    let (response_body, status_code) = match *method {
+        Method::GET => match path.as_str() {
             INVENTORY => get_inventory(client).await,
             _ => (json!("Not found"), StatusCode::NOT_FOUND),
         },
-        &Method::POST => match path.as_str() {
+        Method::POST => match path.as_str() {
             ORDER => make_order(client, event).await,
             _ => (json!("Not found"), StatusCode::NOT_FOUND),
         },
