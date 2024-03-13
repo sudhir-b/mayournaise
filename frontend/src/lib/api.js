@@ -6,7 +6,33 @@ export const getInventory = async () => {
   if (!response.ok) {
     throw new Error("Network response was not ok.");
   }
-  return response.json();
+  const data = await response.json();
+
+  let transformed = {};
+  for (const item of data["items"]) {
+    if (!transformed[item["item_type"]]) {
+      transformed[item["item_type"]] = [];
+    }
+
+    let name = item["item_name"];
+    if (item["stock"] === 0) {
+      name = `${item["item_name"]} - sold out`;
+    }
+
+    transformed[item["item_type"]].push({
+      name: name,
+      stock: item["stock"],
+    });
+  }
+
+  const keys = Object.keys(transformed);
+  for (const key of keys) {
+    transformed[key].sort(function (a, b) {
+      return b.stock - a.stock;
+    });
+  }
+
+  return transformed;
 };
 
 export const submitOrder = async ({

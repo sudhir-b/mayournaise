@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { getInventory, submitOrder } from "./api"; // Separate API calls into a module
-  import InventorySelector from "./InventorySelector.svelte"; // Component for each selector
+  import { getInventory, submitOrder } from "./api";
+  import InventorySelector from "./InventorySelector.svelte";
 
   let oil, egg, acid, mustard, emailAddress;
   let buttonDisabled = false;
@@ -11,8 +11,7 @@
 
   onMount(async () => {
     try {
-      const data = await getInventory();
-      inventory = transform(data);
+      inventory = await getInventory();
     } catch (error) {
       notification = "Could not load inventory. Please try again later.";
     }
@@ -35,43 +34,6 @@
       buttonDisabled = false;
       notification = "Something went wrong - try a different combination?";
     }
-  };
-
-  onMount(async () => {
-    try {
-      const data = await getInventory();
-      inventory = transform(data);
-    } catch (error) {
-      notification = "Could not load inventory. Please try again later.";
-    }
-  });
-
-  const transform = (data) => {
-    let transformed = {};
-    for (const item of data.items) {
-      if (!transformed[item["item_type"]]) {
-        transformed[item["item_type"]] = [];
-      }
-
-      let name = item["item_name"];
-      if (item["stock"] === 0) {
-        name = `${item["item_name"]} - sold out`;
-      }
-
-      transformed[item["item_type"]].push({
-        name: name,
-        stock: item["stock"],
-      });
-    }
-
-    const keys = Object.keys(transformed);
-    for (const key of keys) {
-      transformed[key].sort(function (a, b) {
-        return b.stock - a.stock;
-      });
-    }
-
-    return transformed;
   };
 </script>
 
