@@ -30,12 +30,7 @@
         emailAddress,
       });
 
-      if (response.ok) {
-        buttonText = "Submitted!";
-      } else {
-        buttonDisabled = false;
-        notification = "Something went wrong - try a different combination?";
-      }
+      buttonText = "Submitted!";
     } catch (error) {
       buttonDisabled = false;
       notification = "Something went wrong - try a different combination?";
