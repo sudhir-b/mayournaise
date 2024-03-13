@@ -4,7 +4,7 @@
   export let selected = "";
 </script>
 
-<label>
+<label for={title}>
   {title}:
   <select bind:value={selected}>
     {#each items as item}
@@ -19,15 +19,15 @@
   select {
     padding: 12px;
     margin: 16px 0;
-    border: 1px solid #ddd; /* Lighter border */
-    border-radius: 6px; /* Rounded borders */
-    background-color: #fff; /* White background */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft box shadow */
-    font-size: 16px; /* Larger font size */
-    color: #333; /* Dark grey color for text */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #333;
     transition:
       border-color 0.3s,
-      box-shadow 0.3s; /* Smooth transition for hover effects */
+      box-shadow 0.3s;
   }
 
   select:focus {

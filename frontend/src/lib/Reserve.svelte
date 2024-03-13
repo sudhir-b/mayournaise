@@ -37,8 +37,9 @@
   };
 </script>
 
-<h1>Mayournaise</h1>
-<p>Mayo for YOU from Sudhir</p>
+<!-- maybe shuffle this title between some options -->
+<h1>Reserve your Mayournaise</h1>
+<p>A silly project by Sudhir</p>
 
 {#if inventory}
   <InventorySelector
@@ -107,12 +108,28 @@
 
   input[type="email"] {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    margin: 16px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    font-size: 16px;
+    color: #333;
+    transition:
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+
+  input[type="email"]:focus {
+    border-color: #5b9ddf; /* Highlight color when focused */
+    box-shadow: 0 2px 8px rgba(91, 157, 223, 0.5); /* Stronger box shadow for focus */
+    outline: none; /* Remove default focus outline */
+  }
+
+  input[type="email"]:hover {
+    border-color: #5b9ddf; /* Highlight color when hovered */
   }
 
   .submit-button {
