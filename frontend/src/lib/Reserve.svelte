@@ -22,7 +22,7 @@
     buttonDisabled = true;
 
     try {
-      const response = await submitOrder({
+      await submitOrder({
         oil,
         egg,
         acid,
