@@ -20,7 +20,13 @@ export const submitOrder = async ({
   const submitResponse = await fetch(buyUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ oil, egg, acid, mustard, emailAddress }),
+    body: JSON.stringify({
+      oil,
+      egg,
+      acid,
+      mustard,
+      email_address: emailAddress,
+    }),
   });
 
   if (!submitResponse.ok) {
