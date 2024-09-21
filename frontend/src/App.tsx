@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
-import "./App.css";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
@@ -34,28 +33,28 @@ function Mayournaise() {
     );
 
   return (
-    <>
-      <h1 className="text-5xl sm:text-4xl font-bold text-center mb-1 sm:mb-2">
+    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
+      <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
-      <p className="text-center text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">
+      <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
         A silly project by Sudhir
       </p>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-3 sm:space-y-4"
+        className="space-y-4 sm:space-y-6"
       >
         {["oil", "egg", "acid", "mustard"].map((item) => (
-          <label key={item} className="block mb-2 sm:mb-3">
+          <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
-              {item}:
+              {item}
             </span>
             <select
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-1 sm:py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
@@ -70,12 +69,12 @@ function Mayournaise() {
           </label>
         ))}
 
-        <label className="block mt-4 sm:mt-6 mb-1 font-medium text-sm sm:text-base">
-          Email:
+        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
+          Email
           <input
             type="email"
             {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-1 sm:py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
           />
         </label>
         {errors.email_address && (
@@ -84,19 +83,21 @@ function Mayournaise() {
           </span>
         )}
 
-        <div className="mt-6 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-3 rounded-md border border-gray-300">
+        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
           <p>
-            For legal reasons, this isn't a food business.<br />
-            You are solely responsible for the resulting taste.<br />
-            If I don't know you, you probably won't get any mayo (sorry).
+            For legal reasons, this isn't a food business
+            <br />
+            You are solely responsible for the resulting taste
+            <br />
+            If I don't know you, you probably won't get your mayo (sorry)
           </p>
         </div>
 
         <button
           type="submit"
           disabled={isSubmitSuccessful}
-          className={`w-full py-2 sm:py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-4 ${
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
             isSubmitSuccessful
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -105,7 +106,7 @@ function Mayournaise() {
           {isSubmitSuccessful ? "Reserved!" : "Reserve"}
         </button>
       </form>
-    </>
+    </div>
   );
 }
 
