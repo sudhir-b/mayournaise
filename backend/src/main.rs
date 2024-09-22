@@ -191,6 +191,8 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         .send()
         .await;
 
+    // TODO: send an email to myself with the details
+
     match transaction_result {
         Ok(_) => (json!(""), StatusCode::CREATED),
         Err(_) => (json!(""), StatusCode::BAD_REQUEST),
