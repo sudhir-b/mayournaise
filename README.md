@@ -45,7 +45,6 @@ run `vercel --prod`
 ## TODO
 - monitoring for Lambda function usage
 - add a real referral code mechanism
-- randomise button for options
 - add ability to add extras like garlic, smoke, harissa, etc.
 - per-email limit on ordering?
 - make frontend pretty
