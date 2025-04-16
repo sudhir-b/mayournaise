@@ -3,7 +3,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import useInventoryQuery, {
+  CollatedInventoryItem,
+} from "./hooks/queries/useInventoryQuery";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -11,6 +13,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Added setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +23,22 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+
+  const handleRandomize = () => {
+    if (!inventory) return;
+
+    const categories: (keyof SubmitOrderRequest)[] = ["oil", "egg", "acid", "mustard"];
+
+    categories.forEach((category) => {
+      const availableOptions = inventory[category as keyof typeof inventory]
+        ?.filter((option: CollatedInventoryItem) => option.stock > 0); // Use correct type
+
+      if (availableOptions && availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        setValue(category, availableOptions[randomIndex].name, { shouldValidate: true });
+      }
     });
   };
 
@@ -56,7 +75,7 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {inventory[item as keyof typeof inventory]?.map((option) => ( // Add optional chaining
                 <option
                   key={option.name}
                   value={option.name}
@@ -93,6 +112,15 @@ function Mayournaise() {
             If I don't know you, you probably won't get your mayo (sorry)
           </p>
         </div>
+
+        {/* Added Randomize Button */}
+        <button
+          type="button" // Important: Set type to "button" to prevent form submission
+          onClick={handleRandomize}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 bg-green-500 hover:bg-green-600 text-white"
+        >
+          Randomize Options
+        </button>
 
         <button
           type="submit"

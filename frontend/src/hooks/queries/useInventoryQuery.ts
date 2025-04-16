@@ -12,7 +12,7 @@ type InventoryResponse = {
   items: InventoryItem[];
 };
 
-type CollatedInventoryItem = {
+export type CollatedInventoryItem = { // Added export
   name: string;
   stock: number;
 };
