@@ -23,6 +23,8 @@ You can preview the production build with `npm run preview`.
 
 ## Lambda
 
+Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
 
