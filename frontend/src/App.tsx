@@ -60,16 +60,13 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-center mb-2">
           <button
             type="button"
             onClick={randomizeOptions}
             className="text-indigo-600 hover:text-indigo-800 font-medium text-sm sm:text-base flex items-center bg-indigo-50 py-1 px-3 rounded-md hover:bg-indigo-100 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5.5a.5.5 0 001 0V4a1 1 0 112 0v5.5a2.5 2.5 0 01-5 0V5a1 1 0 011-1z" clipRule="evenodd" />
-              <path d="M7 6a1 1 0 100-2H5a1 1 0 000 2h2zM5 10a1 1 0 100-2H3a1 1 0 000 2h2zM3 15a1 1 0 110-2h2a1 1 0 110 2H3zM15 6a1 1 0 100-2h-2a1 1 0 000 2h2zM17 10a1 1 0 100-2h-2a1 1 0 000 2h2zM15 15a1 1 0 110-2h2a1 1 0 110 2h-2z" />
-            </svg>
+            <span className="mr-2" aria-hidden="true">🪄</span>
             Randomize Options
           </button>
         </div>
