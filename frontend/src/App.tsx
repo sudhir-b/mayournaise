@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Added setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -22,6 +23,32 @@ function Mayournaise() {
       },
     });
   };
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const categories: (keyof SubmitOrderRequest)[] = [
+      "oil",
+      "egg",
+      "acid",
+      "mustard",
+    ];
+    categories.forEach((category) => {
+      // Ensure category exists in inventory and is an array before proceeding
+      if (inventory[category] && Array.isArray(inventory[category])) {
+        const availableOptions = inventory[category].filter(
+          (option) => option.stock > 0
+        );
+        if (availableOptions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableOptions.length);
+          setValue(category, availableOptions[randomIndex].name);
+        }
+      } else {
+        console.warn(`Inventory data for category '${category}' is missing or not an array.`);
+      }
+    });
+  };
+
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -46,7 +73,7 @@ function Mayournaise() {
         className="space-y-4 sm:space-y-6"
       >
         {["oil", "egg", "acid", "mustard"].map((item) => (
-          <label key={item} className="block">
+          <label key={item} className="block text-left">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
@@ -56,20 +83,20 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {inventory[item as keyof typeof inventory]?.map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
                   disabled={option.stock === 0}
                 >
-                  {option.name}
+                  {option.name} {option.stock === 0 ? "(Out of stock)" : ""}
                 </option>
-              ))}
+              )) ?? <option disabled>Loading options...</option>}
             </select>
           </label>
         ))}
 
-        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
+        <label className="block text-left mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
           <input
             type="email"
@@ -78,12 +105,12 @@ function Mayournaise() {
           />
         </label>
         {errors.email_address && (
-          <span className="text-red-500 text-xs sm:text-sm">
+          <span className="block text-left text-red-500 text-xs sm:text-sm">
             This field is required
           </span>
         )}
 
-        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
+        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300 text-left">
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
           <p>
             For legal reasons, this isn't a food business
@@ -94,6 +121,16 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Ingredients
+        </button>
+
+        {/* Reserve Button */}
         <button
           type="submit"
           disabled={isSubmitSuccessful}
