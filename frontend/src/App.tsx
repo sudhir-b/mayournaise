@@ -94,7 +94,7 @@ function Mayournaise() {
           onClick={handleRandomize}
           className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 bg-purple-600 hover:bg-purple-700 text-white"
         >
-          Randomize Ingredients
+          Randomize
         </button>
 
 
