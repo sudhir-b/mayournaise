@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// Need setValue from react-hook-form to update form state programmatically
 import { SubmitHandler, useForm } from "react-hook-form"; 
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
@@ -12,11 +11,11 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
-    setValue, // Destructure setValue
-    reset, // Import reset to clear the form state including success status
+    setValue,
+    reset,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>({
-    defaultValues: { // Initialize with empty strings for controlled components
+    defaultValues: {
       oil: "",
       egg: "",
       acid: "",
@@ -32,8 +31,6 @@ function Mayournaise() {
         // errorToast("Failed to submit order");
       },
       onSuccess: () => {
-         // Optionally reset form fields after successful submission if desired
-         // reset(); // Uncomment this line to clear the form on success
       }
     });
   };
