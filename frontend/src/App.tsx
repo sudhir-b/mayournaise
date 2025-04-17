@@ -1,3 +1,4 @@
+```typescript
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
@@ -11,6 +12,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Import setValue from useForm
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +22,29 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+
+  // Function to randomize options
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const ingredients: (keyof SubmitOrderRequest)[] = [
+      "oil",
+      "egg",
+      "acid",
+      "mustard",
+    ];
+
+    ingredients.forEach((item) => {
+      const availableOptions = inventory[item].filter(
+        (option) => option.stock > 0
+      );
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        setValue(item, randomOption.name);
+      }
     });
   };
 
@@ -68,6 +93,15 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Ingredients
+        </button>
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
@@ -121,3 +155,5 @@ function App() {
 }
 
 export default App;
+
+```
