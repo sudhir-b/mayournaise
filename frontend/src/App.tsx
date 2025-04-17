@@ -1,12 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// Import useEffect
 import { SubmitHandler, useForm, UseFormSetValue } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-// Import inventory types
 import useInventoryQuery, { CollatedInventory } from "./hooks/queries/useInventoryQuery";
-import { useEffect, useRef } from "react"; // Import useRef
+import { useEffect, useRef } from "react";
 
 // Helper function to set random values
 const selectRandomIngredients = (
@@ -20,10 +18,8 @@ const selectRandomIngredients = (
       const randomIndex = Math.floor(Math.random() * availableOptions.length);
       const randomOption = availableOptions[randomIndex];
       const originalName = randomOption.name.replace(' - sold out', '');
-      // Set value, but don't trigger validation on initial load
       setValue(category, originalName, { shouldValidate: false, shouldDirty: true });
     } else {
-       // Set to empty if no options available for a category
        setValue(category, "", { shouldValidate: false, shouldDirty: true });
     }
   });
@@ -39,26 +35,19 @@ function Mayournaise() {
     setValue,
     reset,
     formState: { isSubmitSuccessful, errors },
-    // Watch might be needed if we want fine-grained control, but setValue should be enough
   } = useForm<SubmitOrderRequest>({
-    // Remove ingredient defaults, keep email default
     defaultValues: {
       email_address: ""
-      // oil, egg, acid, mustard will be set by useEffect
     }
   });
 
-  // Ref to track if initial randomization has occurred
   const initialRandomizationDone = useRef(false);
 
-  // Effect to set initial random values when inventory loads
   useEffect(() => {
-    // Check if inventory is loaded and initial randomization hasn't happened yet
     if (inventory && !isLoading && !initialRandomizationDone.current) {
       selectRandomIngredients(inventory, setValue);
-      initialRandomizationDone.current = true; // Mark as done
+      initialRandomizationDone.current = true;
     }
-    // Depend on inventory and isLoading to re-run if they change
   }, [inventory, isLoading, setValue]);
 
 
@@ -69,46 +58,35 @@ function Mayournaise() {
         // errorToast("Failed to submit order");
       },
       onSuccess: () => {
-         // Resetting the form might clear the randomized values, consider alternatives
-         // or reset with specific values if needed after submission.
-         // For now, just rely on isSubmitSuccessful disabling the button.
       }
     });
   };
 
-  // Update handleRandomize to use the helper function
   const handleRandomize = () => {
     if (!inventory) return;
 
-    selectRandomIngredients(inventory, setValue); // Use the helper
+    selectRandomIngredients(inventory, setValue);
 
-    // Reset the submission status if user randomizes after a successful submission
     if (isSubmitSuccessful) {
-       // Reset keeps form values by default if first arg is undefined
        reset(undefined, { keepErrors: true, keepDirty: true, keepTouched: true, keepIsValid: true, keepSubmitCount: false });
     }
   };
 
 
-  if (isLoading && !inventory) // Show loading only if inventory isn't cached
+  if (isLoading && !inventory)
     return <p className="text-center text-lg">Loading inventory...</p>;
-  // Handle case where inventory fetch failed after loading state
   if (!inventory && !isLoading)
     return (
       <p className="text-center text-lg text-red-600">
         Failed to load inventory. Cannot set initial values.
       </p>
     );
- // If loading but inventory exists (cache), or inventory loaded, render form
- // This prevents flicker if data is cached
  if (!inventory) {
-     // This case should ideally be covered above, but as a safeguard:
      return <p className="text-center text-lg">Preparing mayonnaise options...</p>;
  }
 
 
   return (
-    // ... rest of the component remains largely the same
     <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
@@ -121,22 +99,19 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {/* Map ingredients */}
         {( ["oil", "egg", "acid", "mustard"] as const ).map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item, { // Simplified register
+              {...register(item, {
                 required: `Please select an ${item}`,
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
-             // No defaultValue needed here, react-hook-form controls it
             >
-              {/* Placeholder option is still useful if randomization results in empty string */}
               <option value="" disabled>Select {item}</option>
-              {inventory[item].map((option) => ( // Use item directly
+              {inventory[item].map((option) => (
                 <option
                   key={option.name}
                   value={option.name.replace(' - sold out', '')}
