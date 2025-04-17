@@ -18,7 +18,7 @@ function Mayournaise() {
     handleSubmit,
     setValue, // Destructure setValue
     formState: { isSubmitSuccessful, errors },
-    trigger, // Destructure trigger to potentially show errors if needed
+    // trigger, // Destructure trigger to potentially show errors if needed -- Removed as unused
   } = useForm<SubmitOrderRequest>({
       // Keep default values empty initially
       defaultValues: {
