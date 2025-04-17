@@ -56,8 +56,6 @@ function Mayournaise() {
       onError: () => {
         // TODO: handle error
         // errorToast("Failed to submit order");
-      },
-      onSuccess: () => {
       }
     });
   };
