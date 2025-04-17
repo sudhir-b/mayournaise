@@ -5,12 +5,21 @@ import useSubmitOrderMutation, {
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
 
+// Define ingredient keys as a constant
+const INGREDIENT_KEYS: (keyof SubmitOrderRequest)[] = [
+  "oil",
+  "egg",
+  "acid",
+  "mustard",
+];
+
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
   const {
     register,
     handleSubmit,
+    setValue, // Import setValue to update form state programmatically
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -22,6 +31,27 @@ function Mayournaise() {
       },
     });
   };
+
+  // Function to handle randomizing selections
+  const handleRandomize = () => {
+    if (!inventory) return; // Ensure inventory is loaded
+
+    INGREDIENT_KEYS.forEach((item) => {
+      // Filter out options that are out of stock
+      const availableOptions = inventory[item].filter(
+        (option) => option.stock > 0
+      );
+      if (availableOptions.length > 0) {
+        // Pick a random index
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        // Use setValue to update the form field
+        setValue(item, randomOption.name);
+      }
+      // If no options are available for an item, it remains unchanged
+    });
+  };
+
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -45,18 +75,19 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {["oil", "egg", "acid", "mustard"].map((item) => (
+        {/* Use the INGREDIENT_KEYS constant for mapping */}
+        {INGREDIENT_KEYS.map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item as keyof SubmitOrderRequest, {
+              {...register(item, {
                 required: true,
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {inventory[item].map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
@@ -93,6 +124,15 @@ function Mayournaise() {
             If I don't know you, you probably won't get your mayo (sorry)
           </p>
         </div>
+
+        {/* Add Randomize Button Here */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={handleRandomize}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-3 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Options
+        </button>
 
         <button
           type="submit"
