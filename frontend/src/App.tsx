@@ -5,32 +5,97 @@ import useSubmitOrderMutation, {
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
 
+// Define the ingredient keys more strictly
+const INGREDIENT_KEYS: Array<keyof Omit<SubmitOrderRequest, "email_address">> = ["oil", "egg", "acid", "mustard"];
+
 function Mayournaise() {
-  const { data: inventory, isLoading } = useInventoryQuery();
+  const { data: inventory, isLoading, error: inventoryError } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
   const {
     register,
     handleSubmit,
+    setValue, // Destructure setValue
     formState: { isSubmitSuccessful, errors },
-  } = useForm<SubmitOrderRequest>();
+  } = useForm<SubmitOrderRequest>({
+      // Set default values to prevent uncontrolled component warnings initially
+      defaultValues: {
+          oil: "",
+          egg: "",
+          acid: "",
+          mustard: "",
+          email_address: ""
+      }
+  });
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
+    // Ensure all selections are made before submitting
+    const allSelected = INGREDIENT_KEYS.every(key => data[key]);
+    if (!allSelected || !data.email_address) {
+        // This basic check supplements RHF validation, especially for default values
+        console.error("Form submission attempted with missing selections.");
+        // Optionally, trigger RHF validation display manually if needed
+        // trigger();
+        return;
+    }
     submitOrderMutation.mutate(data, {
       onError: () => {
         // TODO: handle error
         // errorToast("Failed to submit order");
+        console.error("Failed to submit order");
       },
     });
   };
 
+  const randomizeOptions = () => {
+    if (!inventory) {
+        console.warn("Cannot randomize: Inventory not loaded yet.");
+        return;
+    }
+
+    INGREDIENT_KEYS.forEach((item) => {
+      const optionsList = inventory[item];
+      if (!Array.isArray(optionsList)) {
+        console.error(`Inventory for ${item} is not an array:`, optionsList);
+        return; // Skip this item if data is invalid
+      }
+
+      const availableOptions = optionsList.filter(option => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        setValue(item, randomOption.name, { shouldValidate: true, shouldDirty: true }); // Update value and trigger validation/dirty state
+      } else {
+        // If no stock, set to empty and let validation catch it, or keep current value
+         setValue(item, "", { shouldValidate: true, shouldDirty: true }); // Clear selection if nothing available
+        console.warn(`No available stock for ingredient: ${item}`);
+      }
+    });
+  };
+
+
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
-  if (!inventory)
+
+  // Handle inventory loading error
+  if (inventoryError || !inventory)
     return (
       <p className="text-center text-lg text-red-600">
-        Failed to load inventory.
+        Failed to load inventory. Please try refreshing the page.
       </p>
     );
+
+  // Validate inventory structure (optional but recommended)
+   const hasAllKeys = INGREDIENT_KEYS.every(key => key in inventory && Array.isArray(inventory[key]));
+
+  if (!hasAllKeys) {
+      console.error("Inventory data structure is missing required keys or keys are not arrays:", inventory);
+      return (
+          <p className="text-center text-lg text-red-600">
+              Invalid inventory data received.
+          </p>
+      );
+  }
+
 
   return (
     <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
@@ -45,45 +110,57 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {["oil", "egg", "acid", "mustard"].map((item) => (
-          <label key={item} className="block">
+        {INGREDIENT_KEYS.map((item) => (
+          <label key={item} className="block text-left"> {/* Align label text left */}
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item as keyof SubmitOrderRequest, {
-                required: true,
+              {...register(item, {
+                required: `${item.charAt(0).toUpperCase() + item.slice(1)} is required.`, // Add specific error message
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 ${errors[item] ? 'border-red-500 outline-red-500' : 'border-gray-300 outline-gray-300'}`} // Dynamic border color on error
+              // defaultValue="" // Controlled by useForm defaultValues
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              <option value="" disabled>Select {item}...</option> {/* Placeholder option */}
+              {inventory[item].map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
                   disabled={option.stock === 0}
                 >
-                  {option.name}
+                  {option.name} {option.stock === 0 ? "(Out of stock)" : ""}
                 </option>
               ))}
             </select>
+            {errors[item] && ( // Display error for each select
+                <span className="text-red-500 text-xs sm:text-sm block mt-1">{errors[item]?.message}</span>
+            )}
           </label>
         ))}
 
-        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
+        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base text-left"> {/* Align label text left */}
           Email
           <input
             type="email"
-            {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            {...register("email_address", {
+                 required: "Email address is required.",
+                 pattern: { // Basic email pattern validation
+                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                     message: "Invalid email address format"
+                 }
+             })}
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 ${errors.email_address ? 'border-red-500 outline-red-500' : 'border-gray-300 outline-gray-300'}`} // Dynamic border color
+            placeholder="your.email@example.com" // Add placeholder
           />
         </label>
         {errors.email_address && (
-          <span className="text-red-500 text-xs sm:text-sm">
-            This field is required
+          <span className="text-red-500 text-xs sm:text-sm block mt-1 text-left"> {/* Align error text left */}
+            {errors.email_address.message} {/* Display specific error message */}
           </span>
         )}
 
-        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
+        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300 text-left"> {/* Align disclaimer text left */}
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
           <p>
             For legal reasons, this isn't a food business
@@ -94,16 +171,25 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-4 bg-purple-600 hover:bg-purple-700 text-white transition duration-150 ease-in-out" // Added transition
+        >
+          Randomize Ingredients
+        </button>
+
         <button
           type="submit"
-          disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
-            isSubmitSuccessful
+          disabled={isSubmitSuccessful || submitOrderMutation.isPending} // Disable while submitting
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 transition duration-150 ease-in-out ${ // Added transition
+            isSubmitSuccessful || submitOrderMutation.isPending // Adjusted condition
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
           }`}
         >
-          {isSubmitSuccessful ? "Reserved!" : "Reserve"}
+          {submitOrderMutation.isPending ? "Reserving..." : (isSubmitSuccessful ? "Reserved!" : "Reserve")} {/* Show loading state */}
         </button>
       </form>
     </div>
