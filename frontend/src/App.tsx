@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // <-- Add setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -22,6 +23,31 @@ function Mayournaise() {
       },
     });
   };
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const ingredients: (keyof SubmitOrderRequest)[] = [
+      "oil",
+      "egg",
+      "acid",
+      "mustard",
+    ];
+
+    ingredients.forEach((item) => {
+      // Type assertion needed because inventory key type doesn't perfectly match SubmitOrderRequest keyof
+      const inventoryItemKey = item as keyof typeof inventory; 
+      const availableOptions = inventory[inventoryItemKey].filter(
+        (option) => option.stock > 0
+      );
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        setValue(item, randomOption.name);
+      }
+    });
+  };
+
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -68,6 +94,15 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+
+        {/* Add Randomize Button */}
+        <button
+          type="button" // Important: prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-2 px-4 font-semibold rounded-lg shadow-md bg-purple-500 hover:bg-purple-600 text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-4"
+        >
+          Randomize Ingredients
+        </button>
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
