@@ -3,7 +3,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import useInventoryQuery, { CollatedInventoryItem, CollatedInventory } from "./hooks/queries/useInventoryQuery"; // Import types
+
+// Define a type for the ingredient keys based on CollatedInventory
+type IngredientKey = keyof CollatedInventory;
+
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -11,7 +15,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
-    setValue, // Add setValue here
+    setValue,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -28,10 +32,12 @@ function Mayournaise() {
   const randomizeOptions = () => {
     if (!inventory) return;
 
-    const ingredients: (keyof SubmitOrderRequest)[] = ["oil", "egg", "acid", "mustard"];
+    // Use the specific IngredientKey type
+    const ingredients: IngredientKey[] = ["oil", "egg", "acid", "mustard"];
 
     ingredients.forEach((item) => {
-      const availableOptions = inventory[item].filter(option => option.stock > 0);
+      // Explicitly type 'option' as CollatedInventoryItem
+      const availableOptions = inventory[item].filter((option: CollatedInventoryItem) => option.stock > 0);
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
         const randomOption = availableOptions[randomIndex];
@@ -63,18 +69,20 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {["oil", "egg", "acid", "mustard"].map((item) => (
+        {/* Map using the IngredientKey type constant */}
+        {(['oil', 'egg', 'acid', 'mustard'] as IngredientKey[]).map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item as keyof SubmitOrderRequest, {
+              {...register(item, { // No need for 'as keyof SubmitOrderRequest' here anymore
                 required: true,
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {/* Use the IngredientKey type for indexing inventory */}
+              {inventory[item].map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
