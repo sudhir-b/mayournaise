@@ -19,4 +19,3 @@ jobs:
         working-directory: ./frontend
       - run: bun run build
         working-directory: ./frontend
-      - run: echo "testing workflow failure retries" && exit 1
