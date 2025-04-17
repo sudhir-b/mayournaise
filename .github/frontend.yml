@@ -16,4 +16,6 @@ jobs:
           bun-version: latest
 
       - run: bun install
+        working-directory: ./frontend
       - run: bun run build
+        working-directory: ./frontend
