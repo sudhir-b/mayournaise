@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Added setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +21,24 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+
+  const handleRandomize = () => {
+    if (!inventory) return;
+
+    const ingredients = ["oil", "egg", "acid", "mustard"] as const;
+
+    ingredients.forEach((item) => {
+      const options = inventory[item];
+      const availableOptions = options.filter((option) => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        setValue(item, availableOptions[randomIndex].name, {
+          shouldValidate: true, // Trigger validation
+          shouldDirty: true,    // Mark field as dirty
+        });
+      }
     });
   };
 
@@ -94,6 +113,15 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Added Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={handleRandomize}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mt-2" // Added margin-top
+        >
+          Randomize Ingredients
+        </button>
+
         <button
           type="submit"
           disabled={isSubmitSuccessful}
@@ -121,3 +149,4 @@ function App() {
 }
 
 export default App;
+
