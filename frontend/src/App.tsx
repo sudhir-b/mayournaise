@@ -82,7 +82,7 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item]?.map((option) => ( // Optional chaining for safety
+              {inventory[item]?.map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
@@ -95,13 +95,12 @@ function Mayournaise() {
           </label>
         ))}
 
-        {/* Randomize Button */}
         <button
           type="button" // Important: type="button" to prevent form submission
           onClick={randomizeOptions}
           className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-3 bg-purple-600 hover:bg-purple-700 text-white"
         >
-          Randomize Ingredients
+          Randomize! 🪄
         </button>
 
 
