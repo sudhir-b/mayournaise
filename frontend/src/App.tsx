@@ -3,7 +3,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-import useInventoryQuery, { InventoryItem } from "./hooks/queries/useInventoryQuery"; // Import InventoryItem type
+// Import the correct type and the hook
+import useInventoryQuery, { CollatedInventoryItem } from "./hooks/queries/useInventoryQuery";
 
 // Define ingredient keys as a constant, excluding 'email_address'
 type IngredientKey = Exclude<keyof SubmitOrderRequest, "email_address">;
@@ -39,9 +40,9 @@ function Mayournaise() {
 
     INGREDIENT_KEYS.forEach((item) => { // Use the specific IngredientKey type here
       // Filter out options that are out of stock
-      // Add explicit type for 'option' to resolve TS7006
+      // Use the imported CollatedInventoryItem type
       const availableOptions = inventory[item].filter(
-        (option: InventoryItem) => option.stock > 0
+        (option: CollatedInventoryItem) => option.stock > 0
       );
       if (availableOptions.length > 0) {
         // Pick a random index
@@ -89,8 +90,8 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {/* Add explicit type for 'option' to resolve TS7006 */}
-              {inventory[item].map((option: InventoryItem) => (
+              {/* Use the imported CollatedInventoryItem type */}
+              {inventory[item].map((option: CollatedInventoryItem) => (
                 <option
                   key={option.name}
                   value={option.name}

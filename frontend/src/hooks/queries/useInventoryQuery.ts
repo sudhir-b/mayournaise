@@ -12,12 +12,13 @@ type InventoryResponse = {
   items: InventoryItem[];
 };
 
-type CollatedInventoryItem = {
+// Export this type
+export type CollatedInventoryItem = {
   name: string;
   stock: number;
 };
 
-type CollatedInventory = {
+export type CollatedInventory = {
   oil: CollatedInventoryItem[];
   egg: CollatedInventoryItem[];
   acid: CollatedInventoryItem[];
@@ -78,4 +79,6 @@ function useInventoryQuery() {
   return useQuery({ queryKey, queryFn });
 }
 
+// Export the hook as default and the types as named exports
+export { CollatedInventoryItem };
 export default useInventoryQuery;
