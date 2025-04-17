@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Add setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -22,6 +23,23 @@ function Mayournaise() {
       },
     });
   };
+
+  // Function to handle randomization
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const ingredients: (keyof SubmitOrderRequest & keyof typeof inventory)[] = ["oil", "egg", "acid", "mustard"];
+
+    ingredients.forEach((item) => {
+      const availableOptions = inventory[item].filter((option) => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        setValue(item, randomOption.name);
+      }
+    });
+  };
+
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -94,10 +112,19 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Use type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-2" // Added mb-2 for spacing
+        >
+          Randomize Selections
+        </button>
+
         <button
           type="submit"
           disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${ // Removed mt-4 sm:mt-6 as spacing is handled by flex container or randomize button margin
             isSubmitSuccessful
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
