@@ -1,4 +1,3 @@
-```typescript
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
@@ -155,5 +154,3 @@ function App() {
 }
 
 export default App;
-
-```
