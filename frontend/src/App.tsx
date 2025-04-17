@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // <-- Import setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +21,24 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const ingredients = ["oil", "egg", "acid", "mustard"] as const; // Use 'as const' for stricter typing
+
+    ingredients.forEach((item) => {
+      const availableOptions = inventory[item].filter(
+        (option) => option.stock > 0
+      );
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        // Use type assertion for setValue
+        setValue(item, randomOption.name as SubmitOrderRequest[typeof item]);
+      }
     });
   };
 
@@ -94,10 +113,19 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-2" // Added margin-bottom
+        >
+          Randomize Ingredients
+        </button>
+
         <button
           type="submit"
           disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${ // Removed top margin as it's handled by the randomize button's bottom margin
             isSubmitSuccessful
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
