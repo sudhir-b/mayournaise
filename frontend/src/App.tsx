@@ -118,7 +118,7 @@ function Mayournaise() {
           onClick={randomizeOptions}
           className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-2" // Added mb-2 for spacing
         >
-          Randomize Selections
+          Randomize!
         </button>
 
         <button
