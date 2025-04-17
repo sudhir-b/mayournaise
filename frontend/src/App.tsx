@@ -11,8 +11,27 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Add setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+
+  const handleRandomize = () => {
+    const ingredients = ["oil", "egg", "acid", "mustard"] as const;
+    ingredients.forEach((ingredient) => {
+      const options = inventory?.[ingredient];
+      if (options && options.length > 0) {
+        // Filter out options with 0 stock
+        const availableOptions = options.filter((opt) => opt.stock > 0);
+        if (availableOptions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableOptions.length);
+          const randomOption = availableOptions[randomIndex];
+          // Use 'as any' because TypeScript struggles with the dynamic key here
+          // Also, RHF's setValue expects the field name and value
+          setValue(ingredient as keyof SubmitOrderRequest, randomOption.name);
+        }
+      }
+    });
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -69,6 +88,16 @@ function Mayournaise() {
           </label>
         ))}
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={handleRandomize}
+          className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Ingredients
+        </button>
+
+
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
           <input
@@ -121,3 +150,4 @@ function App() {
 }
 
 export default App;
+
