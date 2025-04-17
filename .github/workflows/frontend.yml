@@ -17,4 +17,8 @@ jobs:
 
       - run: bun install
         working-directory: ./frontend
+
       - run: bun run build
+        working-directory: ./frontend
+
+      - run: echo "test failure" && exit 1
