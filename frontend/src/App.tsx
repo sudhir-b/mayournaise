@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect, useRef } from "react"; // Import useEffect and useRef
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
@@ -11,13 +12,15 @@ const INGREDIENT_KEYS: Array<keyof Omit<SubmitOrderRequest, "email_address">> = 
 function Mayournaise() {
   const { data: inventory, isLoading, error: inventoryError } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
+  const initialRandomizationDone = useRef(false); // Ref to track initial randomization
   const {
     register,
     handleSubmit,
     setValue, // Destructure setValue
     formState: { isSubmitSuccessful, errors },
+    trigger, // Destructure trigger to potentially show errors if needed
   } = useForm<SubmitOrderRequest>({
-      // Set default values to prevent uncontrolled component warnings initially
+      // Keep default values empty initially
       defaultValues: {
           oil: "",
           egg: "",
@@ -27,73 +30,90 @@ function Mayournaise() {
       }
   });
 
-  const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
-    // Ensure all selections are made before submitting
-    const allSelected = INGREDIENT_KEYS.every(key => data[key]);
-    if (!allSelected || !data.email_address) {
-        // This basic check supplements RHF validation, especially for default values
-        console.error("Form submission attempted with missing selections.");
-        // Optionally, trigger RHF validation display manually if needed
-        // trigger();
+  // Helper function to set a random value for an item
+  const setRandomValue = (item: keyof Omit<SubmitOrderRequest, "email_address">, shouldValidate: boolean) => {
+    if (!inventory) return;
+
+    const optionsList = inventory[item];
+    if (!Array.isArray(optionsList)) {
+      console.error(`Inventory for ${item} is not an array:`, optionsList);
+      return; // Skip this item if data is invalid
+    }
+
+    const availableOptions = optionsList.filter(option => option.stock > 0);
+    if (availableOptions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableOptions.length);
+      const randomOption = availableOptions[randomIndex];
+      setValue(item, randomOption.name, { shouldValidate: shouldValidate, shouldDirty: true }); // Use passed validation flag
+    } else {
+       setValue(item, "", { shouldValidate: shouldValidate, shouldDirty: true }); // Clear selection if nothing available
+      console.warn(`No available stock for ingredient: ${item}`);
+    }
+  };
+
+  // Effect for initial randomization on load
+  useEffect(() => {
+    if (!isLoading && inventory && !initialRandomizationDone.current) {
+        INGREDIENT_KEYS.forEach(item => {
+            setRandomValue(item, false); // Initial set, don't validate yet
+        });
+        initialRandomizationDone.current = true; // Mark initial randomization as done
+    }
+  }, [inventory, isLoading, setValue]); // Dependencies
+
+  // Handler for the randomize button click
+  const handleRandomizeClick = () => {
+    if (!inventory) {
+        console.warn("Cannot randomize: Inventory not loaded yet.");
         return;
     }
+    INGREDIENT_KEYS.forEach(item => {
+        setRandomValue(item, true); // Manual randomize, trigger validation
+    });
+  };
+
+  const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
+    // RHF handles validation based on rules, this extra check might be redundant
+    // const allSelected = INGREDIENT_KEYS.every(key => data[key]);
+    // if (!allSelected || !data.email_address) { ... }
+
     submitOrderMutation.mutate(data, {
       onError: () => {
-        // TODO: handle error
-        // errorToast("Failed to submit order");
         console.error("Failed to submit order");
       },
     });
   };
 
-  const randomizeOptions = () => {
-    if (!inventory) {
-        console.warn("Cannot randomize: Inventory not loaded yet.");
-        return;
-    }
 
-    INGREDIENT_KEYS.forEach((item) => {
-      const optionsList = inventory[item];
-      if (!Array.isArray(optionsList)) {
-        console.error(`Inventory for ${item} is not an array:`, optionsList);
-        return; // Skip this item if data is invalid
-      }
-
-      const availableOptions = optionsList.filter(option => option.stock > 0);
-      if (availableOptions.length > 0) {
-        const randomIndex = Math.floor(Math.random() * availableOptions.length);
-        const randomOption = availableOptions[randomIndex];
-        setValue(item, randomOption.name, { shouldValidate: true, shouldDirty: true }); // Update value and trigger validation/dirty state
-      } else {
-        // If no stock, set to empty and let validation catch it, or keep current value
-         setValue(item, "", { shouldValidate: true, shouldDirty: true }); // Clear selection if nothing available
-        console.warn(`No available stock for ingredient: ${item}`);
-      }
-    });
-  };
-
-
-  if (isLoading)
+  if (isLoading && !initialRandomizationDone.current) // Show loading only on initial load
     return <p className="text-center text-lg">Loading inventory...</p>;
 
   // Handle inventory loading error
-  if (inventoryError || !inventory)
+  if (inventoryError || (!inventory && !isLoading)) // Check error or if loading finished but no inventory
     return (
       <p className="text-center text-lg text-red-600">
         Failed to load inventory. Please try refreshing the page.
       </p>
     );
 
-  // Validate inventory structure (optional but recommended)
-   const hasAllKeys = INGREDIENT_KEYS.every(key => key in inventory && Array.isArray(inventory[key]));
+  // Validate inventory structure only if inventory is loaded
+  if (inventory) {
+      const hasAllKeys = INGREDIENT_KEYS.every(key => key in inventory && Array.isArray(inventory[key]));
+      if (!hasAllKeys) {
+          console.error("Inventory data structure is missing required keys or keys are not arrays:", inventory);
+          return (
+              <p className="text-center text-lg text-red-600">
+                  Invalid inventory data received.
+              </p>
+          );
+      }
+  }
 
-  if (!hasAllKeys) {
-      console.error("Inventory data structure is missing required keys or keys are not arrays:", inventory);
-      return (
-          <p className="text-center text-lg text-red-600">
-              Invalid inventory data received.
-          </p>
-      );
+  // If still loading but inventory exists (e.g., refetching), show form with potentially old data
+  // Or if inventory hasn't loaded yet but randomization is done (unlikely state, but safeguard)
+  // We need inventory to render the options, so show loading if inventory is missing
+  if (!inventory) {
+     return <p className="text-center text-lg">Preparing selection...</p>;
   }
 
 
@@ -120,10 +140,9 @@ function Mayournaise() {
                 required: `${item.charAt(0).toUpperCase() + item.slice(1)} is required.`, // Add specific error message
               })}
               className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 ${errors[item] ? 'border-red-500 outline-red-500' : 'border-gray-300 outline-gray-300'}`} // Dynamic border color on error
-              // defaultValue="" // Controlled by useForm defaultValues
             >
               <option value="" disabled>Select {item}...</option> {/* Placeholder option */}
-              {inventory[item].map((option) => (
+              {inventory[item]?.map((option) => ( // Added optional chaining for safety
                 <option
                   key={option.name}
                   value={option.name}
@@ -174,7 +193,7 @@ function Mayournaise() {
         {/* Randomize Button */}
         <button
           type="button" // Important: type="button" to prevent form submission
-          onClick={randomizeOptions}
+          onClick={handleRandomizeClick} // Use specific handler
           className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-4 bg-purple-600 hover:bg-purple-700 text-white transition duration-150 ease-in-out" // Added transition
         >
           Randomize Ingredients
