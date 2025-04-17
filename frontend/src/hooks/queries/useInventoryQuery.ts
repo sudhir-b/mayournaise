@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { PUBLIC_API_URL } from "../../constants";
 
-type InventoryItem = {
+export type InventoryItem = {
   item_name: string;
   item_type: "oil" | "egg" | "acid" | "mustard";
   stock: number;
@@ -12,12 +12,12 @@ type InventoryResponse = {
   items: InventoryItem[];
 };
 
-type CollatedInventoryItem = {
+export type CollatedInventoryItem = {
   name: string;
   stock: number;
 };
 
-type CollatedInventory = {
+export type CollatedInventory = {
   oil: CollatedInventoryItem[];
   egg: CollatedInventoryItem[];
   acid: CollatedInventoryItem[];

@@ -13,14 +13,14 @@ const selectRandomIngredients = (
 ) => {
   const categories: (keyof CollatedInventory)[] = ["oil", "egg", "acid", "mustard"];
   categories.forEach(category => {
-    const availableOptions = inventory[category].filter(option => option.stock > 0);
+    const availableOptions = inventory[category].filter((option: CollatedInventoryItem) => option.stock > 0);
     if (availableOptions.length > 0) {
       const randomIndex = Math.floor(Math.random() * availableOptions.length);
       const randomOption = availableOptions[randomIndex];
       const originalName = randomOption.name.replace(' - sold out', '');
-      setValue(category, originalName, { shouldValidate: false, shouldDirty: true });
+      setValue(category as keyof SubmitOrderRequest, originalName, { shouldValidate: false, shouldDirty: true });
     } else {
-       setValue(category, "", { shouldValidate: false, shouldDirty: true });
+       setValue(category as keyof SubmitOrderRequest, "", { shouldValidate: false, shouldDirty: true });
     }
   });
 };
