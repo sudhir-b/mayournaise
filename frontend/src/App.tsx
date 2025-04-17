@@ -11,8 +11,24 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Add setValue here
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+    const ingredientTypes: (keyof SubmitOrderRequest)[] = ["oil", "egg", "acid", "mustard"];
+    ingredientTypes.forEach((item) => {
+      // Filter out options with 0 stock
+      const availableOptions = inventory[item].filter(option => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        const randomOption = availableOptions[randomIndex];
+        // Use setValue to update the form field
+        setValue(item, randomOption.name);
+      }
+    });
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -104,6 +120,14 @@ function Mayournaise() {
           }`}
         >
           {isSubmitSuccessful ? "Reserved!" : "Reserve"}
+        </button>
+
+        <button
+          type="button" // Prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize!
         </button>
       </form>
     </div>
