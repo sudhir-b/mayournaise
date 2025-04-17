@@ -11,8 +11,29 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // <-- Add setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    const ingredients: (keyof SubmitOrderRequest)[] = ["oil", "egg", "acid", "mustard"];
+
+    ingredients.forEach((ingredient) => {
+      // Get only options that are in stock
+      const availableOptions = inventory[ingredient].filter(option => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        // Update the form state with the randomly selected option
+        setValue(ingredient, availableOptions[randomIndex].name);
+      } else {
+          // Optional: Handle cases where no options are available for an ingredient
+          console.warn(`No available options for ${ingredient}`);
+          // You might want to set a default value or leave it unchanged
+      }
+    });
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -94,10 +115,20 @@ function Mayournaise() {
           </p>
         </div>
 
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-3 sm:mb-4" // Added margin-bottom
+        >
+          Randomize Ingredients
+        </button>
+
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
             isSubmitSuccessful
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
