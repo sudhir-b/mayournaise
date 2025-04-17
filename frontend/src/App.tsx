@@ -3,10 +3,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import useInventoryQuery, { InventoryItem } from "./hooks/queries/useInventoryQuery"; // Import InventoryItem type
 
-// Define ingredient keys as a constant
-const INGREDIENT_KEYS: (keyof SubmitOrderRequest)[] = [
+// Define ingredient keys as a constant, excluding 'email_address'
+type IngredientKey = Exclude<keyof SubmitOrderRequest, "email_address">;
+const INGREDIENT_KEYS: IngredientKey[] = [
   "oil",
   "egg",
   "acid",
@@ -36,10 +37,11 @@ function Mayournaise() {
   const handleRandomize = () => {
     if (!inventory) return; // Ensure inventory is loaded
 
-    INGREDIENT_KEYS.forEach((item) => {
+    INGREDIENT_KEYS.forEach((item) => { // Use the specific IngredientKey type here
       // Filter out options that are out of stock
+      // Add explicit type for 'option' to resolve TS7006
       const availableOptions = inventory[item].filter(
-        (option) => option.stock > 0
+        (option: InventoryItem) => option.stock > 0
       );
       if (availableOptions.length > 0) {
         // Pick a random index
@@ -76,7 +78,7 @@ function Mayournaise() {
         className="space-y-4 sm:space-y-6"
       >
         {/* Use the INGREDIENT_KEYS constant for mapping */}
-        {INGREDIENT_KEYS.map((item) => (
+        {INGREDIENT_KEYS.map((item) => ( // Use the specific IngredientKey type here
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
@@ -87,7 +89,8 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item].map((option) => (
+              {/* Add explicit type for 'option' to resolve TS7006 */}
+              {inventory[item].map((option: InventoryItem) => (
                 <option
                   key={option.name}
                   value={option.name}
