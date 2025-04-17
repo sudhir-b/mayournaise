@@ -5,12 +5,17 @@ import useSubmitOrderMutation, {
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
 
+// Define the ingredient types explicitly
+type IngredientType = "oil" | "egg" | "acid" | "mustard";
+const ingredientTypes: IngredientType[] = ["oil", "egg", "acid", "mustard"];
+
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
   const {
     register,
     handleSubmit,
+    setValue, // Get setValue from useForm
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -22,6 +27,27 @@ function Mayournaise() {
       },
     });
   };
+
+  // Function to randomize selections
+  const randomizeOptions = () => {
+    if (!inventory) return;
+
+    ingredientTypes.forEach((item) => {
+      // Ensure inventory[item] exists before filtering
+      if (inventory[item]) {
+        const availableOptions = inventory[item].filter(
+          (option) => option.stock > 0
+        );
+        if (availableOptions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableOptions.length);
+          const randomOption = availableOptions[randomIndex];
+          // Use setValue to update the form field
+          setValue(item, randomOption.name);
+        }
+      }
+    });
+  };
+
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -45,18 +71,18 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {["oil", "egg", "acid", "mustard"].map((item) => (
+        {ingredientTypes.map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item as keyof SubmitOrderRequest, {
+              {...register(item, {
                 required: true,
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {inventory[item]?.map((option) => ( // Optional chaining for safety
                 <option
                   key={option.name}
                   value={option.name}
@@ -68,6 +94,16 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-2 sm:mt-3 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Ingredients
+        </button>
+
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
