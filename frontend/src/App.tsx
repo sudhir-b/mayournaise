@@ -3,11 +3,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
-import useInventoryQuery, { CollatedInventoryItem, CollatedInventory } from "./hooks/queries/useInventoryQuery"; // Import types
+import useInventoryQuery, {
+  CollatedInventoryItem, // Import exported type
+  CollatedInventory,   // Import exported type
+} from "./hooks/queries/useInventoryQuery";
 
 // Define a type for the ingredient keys based on CollatedInventory
 type IngredientKey = keyof CollatedInventory;
 
+// Define the list of ingredients as a constant
+const ingredients: IngredientKey[] = ["oil", "egg", "acid", "mustard"];
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -32,20 +37,20 @@ function Mayournaise() {
   const randomizeOptions = () => {
     if (!inventory) return;
 
-    // Use the specific IngredientKey type
-    const ingredients: IngredientKey[] = ["oil", "egg", "acid", "mustard"];
-
+    // Use the ingredients constant
     ingredients.forEach((item) => {
       // Explicitly type 'option' as CollatedInventoryItem
-      const availableOptions = inventory[item].filter((option: CollatedInventoryItem) => option.stock > 0);
+      const availableOptions = inventory[item].filter(
+        (option: CollatedInventoryItem) => option.stock > 0
+      );
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
         const randomOption = availableOptions[randomIndex];
+        // Ensure 'item' is passed as IngredientKey (which is compatible with keyof SubmitOrderRequest)
         setValue(item, randomOption.name);
       }
     });
   };
-
 
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
@@ -69,20 +74,21 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        {/* Map using the IngredientKey type constant */}
-        {(['oil', 'egg', 'acid', 'mustard'] as IngredientKey[]).map((item) => (
+        {/* Map using the ingredients constant */}
+        {ingredients.map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
             </span>
             <select
-              {...register(item, { // No need for 'as keyof SubmitOrderRequest' here anymore
+              // Ensure 'item' is passed as IngredientKey
+              {...register(item, {
                 required: true,
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
-              {/* Use the IngredientKey type for indexing inventory */}
-              {inventory[item].map((option) => (
+              {/* Explicitly type option here */}
+              {inventory[item].map((option: CollatedInventoryItem) => (
                 <option
                   key={option.name}
                   value={option.name}
@@ -124,7 +130,7 @@ function Mayournaise() {
         <button
           type="button" // Important: type="button" to prevent form submission
           onClick={randomizeOptions}
-          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-4" // Added mb-4 for spacing
+          className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white mb-4"
         >
           Randomize Ingredients
         </button>
@@ -132,7 +138,7 @@ function Mayournaise() {
         <button
           type="submit"
           disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${ // Removed mt-4/sm:mt-6 as spacing is handled by randomize button
+          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${ // Removed top margin
             isSubmitSuccessful
               ? "bg-gray-400 text-gray-700 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
