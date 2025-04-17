@@ -79,6 +79,5 @@ function useInventoryQuery() {
   return useQuery({ queryKey, queryFn });
 }
 
-// Export the hook as default and the types as named exports
-export { CollatedInventoryItem };
+// Export the hook as default
 export default useInventoryQuery;
