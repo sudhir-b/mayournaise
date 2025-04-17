@@ -11,8 +11,23 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue, // Added setValue
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+
+  const randomizeOptions = () => {
+    if (!inventory) return;
+    const ingredientKeys = ["oil", "egg", "acid", "mustard"] as const;
+    ingredientKeys.forEach((key) => {
+      const availableOptions = inventory[key].filter(
+        (option) => option.stock > 0
+      );
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        setValue(key, availableOptions[randomIndex].name);
+      }
+    });
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -68,6 +83,16 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+
+        {/* Randomize Button */}
+        <button
+          type="button" // Important: type="button" to prevent form submission
+          onClick={randomizeOptions}
+          className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Randomize Options
+        </button>
+
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
