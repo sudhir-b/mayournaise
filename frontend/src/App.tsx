@@ -54,13 +54,14 @@ function Mayournaise() {
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
                   disabled={option.stock === 0}
+                  className="pl-2"
                 >
                   {option.name}
                 </option>
