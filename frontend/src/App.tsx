@@ -37,11 +37,6 @@ function Mayournaise() {
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
-      {/* Purposeful type error - assigning number to string type */}
-      {(() => {
-        const textValue: string = 42;
-        return null;
-      })()}
       <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
         A silly project by Sudhir
       </p>
