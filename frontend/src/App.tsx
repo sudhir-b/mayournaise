@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +21,19 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+  
+  const randomizeIngredients = () => {
+    if (!inventory) return;
+    
+    // For each category, pick a random in-stock item
+    (["oil", "egg", "acid", "mustard"] as const).forEach((category) => {
+      const availableItems = inventory[category].filter(item => item.stock > 0);
+      if (availableItems.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableItems.length);
+        setValue(category, availableItems[randomIndex].name);
+      }
     });
   };
 
@@ -94,6 +108,15 @@ function Mayournaise() {
             If I don't know you, you probably won't get your mayo (sorry)
           </p>
         </div>
+
+        <button
+          type="button"
+          onClick={randomizeIngredients}
+          disabled={isSubmitSuccessful}
+          className="w-full py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 bg-yellow-500 hover:bg-yellow-600 text-white"
+        >
+          Randomize Ingredients
+        </button>
 
         <button
           type="submit"
