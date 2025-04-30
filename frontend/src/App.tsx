@@ -14,7 +14,7 @@ function Mayournaise() {
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
-  const onSubmit: SubmitHandler<SubmitOrderRequest> = (data): number => {
+  const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
       onError: () => {
         // TODO: handle error
