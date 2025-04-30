@@ -15,6 +15,8 @@ function Mayournaise() {
   } = useForm<SubmitOrderRequest>();
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
+    // Introducing a type error here by assigning a number to data
+    data = 42; // TypeScript error: Type 'number' is not assignable to type 'SubmitOrderRequest'
     submitOrderMutation.mutate(data, {
       onError: () => {
         // TODO: handle error
