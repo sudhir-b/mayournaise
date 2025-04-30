@@ -12,7 +12,7 @@ interface InventorySelectorProps {
   setSelected: (value: string) => void;
 }
 
-const InventorySelector: React.FC<InventorySelectorProps> = ({
+const InventorySelector: React.FC<InventorySelectorProps = ({
   title,
   items,
   selected,
