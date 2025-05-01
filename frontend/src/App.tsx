@@ -60,16 +60,6 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="font-medium text-base">Ingredients</h2>
-          <button 
-            type="button" 
-            onClick={randomizeIngredients}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-4 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75"
-          >
-            Randomize
-          </button>
-        </div>
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
@@ -121,17 +111,27 @@ function Mayournaise() {
           </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitSuccessful}
-          className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-6 ${
-            isSubmitSuccessful
-              ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-700 text-white"
-          }`}
-        >
-          {isSubmitSuccessful ? "Reserved!" : "Reserve"}
-        </button>
+        <div className="grid grid-cols-2 gap-4 mt-4 sm:mt-6">
+          <button
+            type="button"
+            onClick={randomizeIngredients}
+            className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
+          >
+            Randomize
+          </button>
+          
+          <button
+            type="submit"
+            disabled={isSubmitSuccessful}
+            className={`py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
+              isSubmitSuccessful
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+            }`}
+          >
+            {isSubmitSuccessful ? "Reserved!" : "Reserve"}
+          </button>
+        </div>
       </form>
     </div>
   );
