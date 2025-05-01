@@ -12,6 +12,7 @@ function Mayournaise() {
     register,
     handleSubmit,
     formState: { isSubmitSuccessful, errors },
+    setValue,
   } = useForm<SubmitOrderRequest>();
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
@@ -20,6 +21,20 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+  
+  const randomizeIngredients = () => {
+    if (!inventory) return;
+    
+    const categories = ["oil", "egg", "acid", "mustard"] as const;
+    
+    categories.forEach((category) => {
+      const availableItems = inventory[category].filter(item => item.stock > 0);
+      if (availableItems.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableItems.length);
+        setValue(category, availableItems[randomIndex].name);
+      }
     });
   };
 
@@ -45,6 +60,16 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
+        <div className="flex justify-end mb-4">
+          <button
+            type="button"
+            onClick={randomizeIngredients}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base"
+          >
+            Randomize
+          </button>
+        </div>
+        
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
