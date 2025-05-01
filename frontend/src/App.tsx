@@ -11,6 +11,7 @@ function Mayournaise() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -20,6 +21,19 @@ function Mayournaise() {
         // TODO: handle error
         // errorToast("Failed to submit order");
       },
+    });
+  };
+  
+  const handleRandomize = () => {
+    if (!inventory) return;
+    
+    // For each ingredient type, select a random option with available stock
+    (['oil', 'egg', 'acid', 'mustard'] as const).forEach(ingredientType => {
+      const availableOptions = inventory[ingredientType].filter(option => option.stock > 0);
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        setValue(ingredientType, availableOptions[randomIndex].name);
+      }
     });
   };
 
@@ -69,6 +83,14 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+
+        <button
+          type="button"
+          onClick={handleRandomize}
+          className="w-full py-2 px-4 font-medium rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base mt-4 sm:mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-800"
+        >
+          Randomize Ingredients
+        </button>
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
