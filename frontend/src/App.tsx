@@ -100,6 +100,16 @@ function Mayournaise() {
           </span>
         )}
 
+        <div className="mt-4 sm:mt-6">
+          <button
+            type="button"
+            onClick={randomizeIngredients}
+            className="w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
+          >
+            Randomize
+          </button>
+        </div>
+
         <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
           <p>
@@ -111,19 +121,11 @@ function Mayournaise() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4 sm:mt-6">
-          <button
-            type="button"
-            onClick={randomizeIngredients}
-            className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
-          >
-            Randomize
-          </button>
-          
+        <div className="mt-4 sm:mt-6">
           <button
             type="submit"
             disabled={isSubmitSuccessful}
-            className={`py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
+            className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
               isSubmitSuccessful
                 ? "bg-gray-400 text-gray-700 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white"
