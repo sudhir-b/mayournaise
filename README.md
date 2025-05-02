@@ -42,6 +42,14 @@ click ops:
 cd into frontend
 run `vercel --prod`
 
+## Project Architecture
+
+This project uses a serverless architecture:
+- Frontend: React with TypeScript, styled with TailwindCSS
+- Backend: Rust-based AWS Lambda functions
+- Database: AWS DynamoDB for data storage
+- API: RESTful endpoints for communication between frontend and backend
+
 ## TODO
 - monitoring for Lambda function usage
 - add a real referral code mechanism
