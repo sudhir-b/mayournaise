@@ -1,6 +1,6 @@
-# Mayournaise
+# 🥚 Mayournaise 🥚
 
-## Udvikling
+## 💻 Udvikling
 
 Når du har oprettet et projekt og installeret afhængigheder med `npm install` (eller `pnpm install` eller `yarn`), kan du starte en udviklingsserver:
 
@@ -11,7 +11,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Bygning
+## 🏗️ Bygning
 
 For at oprette en produktionsversion af din app:
 
@@ -21,31 +21,32 @@ npm run build
 
 Du kan forhåndsvise produktionsbygningen med `npm run preview`.
 
-## Lambda
+## ☁️ Lambda
 
 Installer cargo lambda med `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
+```bash
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
-
+```
 
 Funktions-URL: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
 Klik operationer:
- - tilføj CORS til funktions-URL
- - tillad content-type header
- - tillad lambda-funktionen at tilgå dynamodb
+ - ✅ tilføj CORS til funktions-URL
+ - ✅ tillad content-type header
+ - ✅ tillad lambda-funktionen at tilgå dynamodb
 
 
-## Frontend
+## 🖥️ Frontend
 
 Skift til frontend-mappen
 Kør `vercel --prod`
 
-## TODO
-- overvågning af Lambda-funktionsbrug
-- tilføj en rigtig henvisningskode-mekanisme
-- randomiser-knap til valgmuligheder
-- tilføj mulighed for at tilføje ekstrating som hvidløg, røg, harissa osv.
-- grænse for bestilling per e-mail?
-- gør frontend pænt
+## 📝 TODO
+- 📊 overvågning af Lambda-funktionsbrug
+- 🔑 tilføj en rigtig henvisningskode-mekanisme
+- 🎲 randomiser-knap til valgmuligheder
+- 🧄 tilføj mulighed for at tilføje ekstrating som hvidløg, røg, harissa osv.
+- 📧 grænse for bestilling per e-mail?
+- 🎨 gør frontend pænt
