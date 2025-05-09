@@ -4,6 +4,7 @@ import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { PRESET_COMBINATIONS } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -24,6 +25,37 @@ function Mayournaise() {
     });
   };
   
+  const applyPreset = (presetName: string) => {
+    if (!inventory) return;
+    
+    const preset = PRESET_COMBINATIONS.find(p => p.name === presetName);
+    if (!preset) return;
+    
+    // Set basic ingredients if they're in stock
+    ["oil", "egg", "acid", "mustard"].forEach((item) => {
+      const itemValue = preset[item as keyof typeof preset] as string;
+      const itemExists = inventory[item as keyof typeof inventory].some(
+        option => option.name === itemValue && option.stock > 0
+      );
+      
+      if (itemExists) {
+        setValue(item as keyof SubmitOrderRequest, itemValue);
+      }
+    });
+    
+    // Set extras if they're in stock
+    setValue("extras", []);
+    if (preset.extras && preset.extras.length > 0) {
+      const availableExtras = preset.extras.filter(extra => 
+        inventory.extra.some(option => option.name === extra && option.stock > 0)
+      );
+      
+      if (availableExtras.length > 0) {
+        setValue("extras", availableExtras);
+      }
+    }
+  };
+
   const randomizeIngredients = () => {
     if (!inventory) return;
     
@@ -86,6 +118,26 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-medium text-sm sm:text-base">Preset Combinations</span>
+            <select
+              onChange={(e) => applyPreset(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              defaultValue=""
+            >
+              <option value="" disabled>Select a preset combination</option>
+              {PRESET_COMBINATIONS.map((preset) => (
+                <option key={preset.name} value={preset.name}>
+                  {preset.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="text-xs text-gray-500 mt-1">
+            Selecting a preset will auto-fill ingredients if they're in stock
+          </p>
+        </div>
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
@@ -165,13 +217,13 @@ function Mayournaise() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4 sm:mt-6">
+        <div className="grid gap-4 mt-4 sm:mt-6">
           <button
             type="button"
             onClick={randomizeIngredients}
             className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
           >
-            Randomize
+            🪄 Randomize Ingredients
           </button>
           
           <button
