@@ -87,7 +87,6 @@ impl Order {
             AttributeValue::S(self.mustard.clone()),
         );
 
-        // Add extras if they exist
         if let Some(extras) = &self.extras {
             let extras_values: Vec<AttributeValue> = extras
                 .iter()
