@@ -112,31 +112,33 @@ function Mayournaise() {
           </label>
         ))}
         
-        <div className="mt-4">
-          <label className="block">
-            <span className="font-medium text-sm sm:text-base">Extras (Optional)</span>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {inventory.extra.map((extra) => (
-                <div key={extra.name} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`extra-${extra.name}`}
-                    value={extra.name}
-                    disabled={extra.stock === 0}
-                    {...register("extras")}
-                    className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <label 
-                    htmlFor={`extra-${extra.name}`} 
-                    className={`text-sm ${extra.stock === 0 ? 'text-gray-400' : ''}`}
-                  >
-                    {extra.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </label>
-        </div>
+        {inventory.extra.length > 0 && (
+          <div className="mt-4">
+            <label className="block">
+              <span className="font-medium text-sm sm:text-base">Extras (Optional)</span>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {inventory.extra.map((extra) => (
+                  <div key={extra.name} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`extra-${extra.name}`}
+                      value={extra.name}
+                      disabled={extra.stock === 0}
+                      {...register("extras")}
+                      className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <label 
+                      htmlFor={`extra-${extra.name}`} 
+                      className={`text-sm ${extra.stock === 0 ? 'text-gray-400' : ''}`}
+                    >
+                      {extra.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </label>
+          </div>
+        )}
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
