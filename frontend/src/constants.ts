@@ -4,34 +4,34 @@ export const PUBLIC_API_URL = "https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-u
 export const PRESET_COMBINATIONS = [
   {
     name: "Classic Mayo",
-    oil: "Neutral Oil",
-    egg: "Whole Eggs",
+    oil: "Sunflower",
+    egg: "Chicken",
     acid: "White Wine Vinegar",
-    mustard: "Dijon Mustard",
+    mustard: "Dijon",
     extras: []
   },
   {
     name: "Garlic Aioli",
-    oil: "Extra Virgin Olive Oil",
+    oil: "Olive",
     egg: "Egg Yolks",
-    acid: "Lemon Juice",
-    mustard: "Dijon Mustard",
+    acid: "lemon juice",
+    mustard: "Dijon",
     extras: ["Garlic Powder", "Roasted Garlic"]
   },
   {
     name: "Herb Infused",
-    oil: "Avocado Oil",
-    egg: "Whole Eggs",
-    acid: "Apple Cider Vinegar",
-    mustard: "Whole Grain Mustard",
+    oil: "Avocado",
+    egg: "Chicken",
+    acid: "apple cider vinegar",
+    mustard: "Wholegrain",
     extras: ["Fresh Herbs", "Black Pepper"]
   },
   {
     name: "Spicy Mayo",
-    oil: "Neutral Oil",
+    oil: "Rapeseed",
     egg: "Egg Yolks",
-    acid: "Rice Vinegar",
-    mustard: "English Mustard",
+    acid: "Rice wine vinegar",
+    mustard: "English",
     extras: ["Cayenne Pepper", "Chili Flakes"]
   }
 ];
