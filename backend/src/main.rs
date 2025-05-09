@@ -58,6 +58,7 @@ pub struct Order {
     pub egg: String,
     pub acid: String,
     pub mustard: String,
+    pub extras: Option<Vec<String>>,
 }
 
 impl Order {
@@ -85,6 +86,21 @@ impl Order {
             "mustard".to_string(),
             AttributeValue::S(self.mustard.clone()),
         );
+
+        // Add extras if they exist
+        if let Some(extras) = &self.extras {
+            let extras_values: Vec<AttributeValue> = extras
+                .iter()
+                .map(|extra| AttributeValue::S(extra.clone()))
+                .collect();
+            
+            if !extras_values.is_empty() {
+                map.insert(
+                    "extras".to_string(),
+                    AttributeValue::L(extras_values),
+                );
+            }
+        }
 
         map
     }
@@ -139,6 +155,21 @@ impl Order {
 
         self.update_ingredient(keys)
     }
+
+    fn update_extra(&self, extra_name: &str) -> Update {
+        let keys = HashMap::from([
+            (
+                String::from("type"),
+                AttributeValue::S("extra".to_string()),
+            ),
+            (
+                String::from("name"),
+                AttributeValue::S(extra_name.to_string()),
+            ),
+        ]);
+
+        self.update_ingredient(keys)
+    }
 }
 
 async fn make_order(client: Client, event: Request) -> (serde_json::Value, StatusCode) {
@@ -156,7 +187,8 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         }
     };
 
-    let transaction_result = client
+    // Start building the transaction
+    let mut transaction_builder = client
         .transact_write_items()
         .transact_items(
             TransactWriteItem::builder()
@@ -187,9 +219,20 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
             TransactWriteItem::builder()
                 .update(order_request.update_mustard())
                 .build(),
-        )
-        .send()
-        .await;
+        );
+
+    // Add extra items to the transaction if they exist
+    if let Some(extras) = &order_request.extras {
+        for extra in extras {
+            transaction_builder = transaction_builder.transact_items(
+                TransactWriteItem::builder()
+                    .update(order_request.update_extra(extra))
+                    .build(),
+            );
+        }
+    }
+
+    let transaction_result = transaction_builder.send().await;
 
     // TODO: send an email to myself with the details
 

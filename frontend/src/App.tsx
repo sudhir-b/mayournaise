@@ -36,6 +36,32 @@ function Mayournaise() {
         setValue(item as keyof SubmitOrderRequest, availableOptions[randomIndex].name);
       }
     });
+    
+    // Clear any previous extras
+    setValue("extras", []);
+    
+    // Randomly select 0-3 extras
+    const extraOptions = inventory.extra.filter(option => option.stock > 0);
+    if (extraOptions.length > 0) {
+      const numExtras = Math.floor(Math.random() * Math.min(4, extraOptions.length));
+      if (numExtras > 0) {
+        // Shuffle and take the first numExtras
+        const selectedExtras = shuffle([...extraOptions])
+          .slice(0, numExtras)
+          .map(option => option.name);
+        setValue("extras", selectedExtras);
+      }
+    }
+  };
+  
+  // Helper function to shuffle an array
+  const shuffle = <T,>(array: T[]): T[] => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
   };
 
   if (isLoading)
@@ -85,6 +111,32 @@ function Mayournaise() {
             </select>
           </label>
         ))}
+        
+        <div className="mt-4">
+          <label className="block">
+            <span className="font-medium text-sm sm:text-base">Extras (Optional)</span>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {inventory.extra.map((extra) => (
+                <div key={extra.name} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`extra-${extra.name}`}
+                    value={extra.name}
+                    disabled={extra.stock === 0}
+                    {...register("extras")}
+                    className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <label 
+                    htmlFor={`extra-${extra.name}`} 
+                    className={`text-sm ${extra.stock === 0 ? 'text-gray-400' : ''}`}
+                  >
+                    {extra.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </label>
+        </div>
 
         <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
           Email
