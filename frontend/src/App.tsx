@@ -1,3 +1,4 @@
+import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
@@ -13,8 +14,9 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { isSubmitSuccessful, errors },
-  } = useForm<SubmitOrderRequest>();
+  } = useForm<SubmitOrderRequest & { preset?: string }>();
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -25,11 +27,17 @@ function Mayournaise() {
     });
   };
   
-  const applyPreset = (presetName: string) => {
-    if (!inventory) return;
+  // Watch for changes in the preset dropdown
+  const selectedPreset = watch("preset");
+
+  // Effect to apply preset when it changes
+  React.useEffect(() => {
+    if (!selectedPreset || !inventory) return;
     
-    const preset = PRESET_COMBINATIONS.find(p => p.name === presetName);
+    const preset = PRESET_COMBINATIONS.find(p => p.name === selectedPreset);
     if (!preset) return;
+    
+    console.log("Applying preset:", preset.name);
     
     // Set basic ingredients if they're in stock
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
@@ -39,7 +47,10 @@ function Mayournaise() {
       );
       
       if (itemExists) {
+        console.log(`Setting ${item} to ${itemValue}`);
         setValue(item as keyof SubmitOrderRequest, itemValue);
+      } else {
+        console.log(`${itemValue} not available for ${item}`);
       }
     });
     
@@ -51,13 +62,17 @@ function Mayournaise() {
       );
       
       if (availableExtras.length > 0) {
+        console.log("Setting extras to:", availableExtras);
         setValue("extras", availableExtras);
       }
     }
-  };
+  }, [selectedPreset, inventory, setValue]);
 
   const randomizeIngredients = () => {
     if (!inventory) return;
+    
+    // Clear preset selection
+    setValue("preset", "");
     
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
       const options = inventory[item as keyof typeof inventory];
@@ -122,11 +137,10 @@ function Mayournaise() {
           <label className="block">
             <span className="font-medium text-sm sm:text-base">Preset Combinations</span>
             <select
-              onChange={(e) => applyPreset(e.target.value)}
+              {...register("preset")}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
-              defaultValue=""
             >
-              <option value="" disabled>Select a preset combination</option>
+              <option value="">Select a preset combination</option>
               {PRESET_COMBINATIONS.map((preset) => (
                 <option key={preset.name} value={preset.name}>
                   {preset.name}
