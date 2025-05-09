@@ -187,7 +187,6 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
         }
     };
 
-    // Start building the transaction
     let mut transaction_builder = client
         .transact_write_items()
         .transact_items(
@@ -221,7 +220,6 @@ async fn make_order(client: Client, event: Request) -> (serde_json::Value, Statu
                 .build(),
         );
 
-    // Add extra items to the transaction if they exist
     if let Some(extras) = &order_request.extras {
         for extra in extras {
             transaction_builder = transaction_builder.transact_items(

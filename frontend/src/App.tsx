@@ -27,19 +27,14 @@ function Mayournaise() {
     });
   };
   
-  // Watch for changes in the preset dropdown
   const selectedPreset = watch("preset");
 
-  // Effect to apply preset when it changes
   React.useEffect(() => {
     if (!selectedPreset || !inventory) return;
     
     const preset = PRESET_COMBINATIONS.find(p => p.name === selectedPreset);
     if (!preset) return;
     
-    console.log("Applying preset:", preset.name);
-    
-    // Set basic ingredients if they're in stock
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
       const itemValue = preset[item as keyof typeof preset] as string;
       const itemExists = inventory[item as keyof typeof inventory].some(
@@ -47,31 +42,14 @@ function Mayournaise() {
       );
       
       if (itemExists) {
-        console.log(`Setting ${item} to ${itemValue}`);
         setValue(item as keyof SubmitOrderRequest, itemValue);
-      } else {
-        console.log(`${itemValue} not available for ${item}`);
       }
     });
-    
-    // Set extras if they're in stock
-    setValue("extras", []);
-    if (preset.extras && preset.extras.length > 0) {
-      const availableExtras = preset.extras.filter(extra => 
-        inventory.extra.some(option => option.name === extra && option.stock > 0)
-      );
-      
-      if (availableExtras.length > 0) {
-        console.log("Setting extras to:", availableExtras);
-        setValue("extras", availableExtras);
-      }
-    }
   }, [selectedPreset, inventory, setValue]);
 
   const randomizeIngredients = () => {
     if (!inventory) return;
     
-    // Clear preset selection
     setValue("preset", "");
     
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
@@ -84,15 +62,12 @@ function Mayournaise() {
       }
     });
     
-    // Clear any previous extras
     setValue("extras", []);
     
-    // Randomly select 0-3 extras
     const extraOptions = inventory.extra.filter(option => option.stock > 0);
     if (extraOptions.length > 0) {
       const numExtras = Math.floor(Math.random() * Math.min(4, extraOptions.length));
       if (numExtras > 0) {
-        // Shuffle and take the first numExtras
         const selectedExtras = shuffle([...extraOptions])
           .slice(0, numExtras)
           .map(option => option.name);
@@ -100,8 +75,7 @@ function Mayournaise() {
       }
     }
   };
-  
-  // Helper function to shuffle an array
+
   const shuffle = <T,>(array: T[]): T[] => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -231,13 +205,13 @@ function Mayournaise() {
           </p>
         </div>
 
-        <div className="grid gap-4 mt-4 sm:mt-6">
+        <div className="grid grid-cols-2 gap-4 mt-4 sm:mt-6">
           <button
             type="button"
             onClick={randomizeIngredients}
             className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
           >
-            🪄 Randomize Ingredients
+            Randomize
           </button>
           
           <button
