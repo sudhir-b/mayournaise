@@ -10,6 +10,7 @@ interface InventorySelectorProps {
   items: InventoryItem[];
   selected: string;
   setSelected: (value: string) => void;
+  icon?: React.ReactNode;
 }
 
 const InventorySelector: React.FC<InventorySelectorProps> = ({
@@ -17,18 +18,27 @@ const InventorySelector: React.FC<InventorySelectorProps> = ({
   items,
   selected,
   setSelected,
+  icon,
 }) => {
   return (
-    <label>
-      {title}:
+    <label className="block">
+      <span className="font-medium capitalize text-sm sm:text-base flex items-center">
+        {icon}
+        <span className="ml-2">{title}</span>
+      </span>
       <select 
         value={selected} 
         onChange={(e) => setSelected(e.target.value)}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+        className="mt-1 block w-full rounded-lg border-gray-200 shadow-sm py-3 px-4 text-sm sm:text-base bg-white outline outline-1 outline-gray-200 transition-all duration-200 hover:border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
       >
         {items.map((item) => (
-          <option key={item.name} value={item.name} disabled={item.stock === 0} className="pl-2">
-            {item.name}
+          <option 
+            key={item.name} 
+            value={item.name} 
+            disabled={item.stock === 0} 
+            className="pl-2"
+          >
+            {item.name} {item.stock <= 3 && item.stock > 0 ? `(Only ${item.stock} left!)` : ""}
           </option>
         ))}
       </select>
