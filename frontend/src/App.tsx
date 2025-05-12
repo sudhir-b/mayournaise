@@ -92,14 +92,20 @@ function Mayournaise() {
             Email
             <input
               type="email"
-              {...register("email_address", { required: true })}
+              {...register("email_address", { 
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Please enter a valid email address"
+                }
+              })}
               className="glass mt-2 block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-colors duration-300"
               placeholder="your@email.com"
             />
           </label>
           {errors.email_address && (
             <span className="text-red-500 text-xs sm:text-sm mt-1 block">
-              This field is required
+              {errors.email_address.message}
             </span>
           )}
         </div>
