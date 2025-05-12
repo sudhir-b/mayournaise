@@ -4,6 +4,7 @@ import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { PRESET_COMBINATIONS } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -38,6 +39,54 @@ function Mayournaise() {
     });
   };
 
+  const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const presetName = event.target.value;
+    if (!presetName) { // Handle case where user selects the placeholder
+      // Optionally clear the form or reset to defaults
+      setValue("oil", "");
+      setValue("egg", "");
+      setValue("acid", "");
+      setValue("mustard", "");
+      setValue("extras", []);
+      return;
+    }
+    const selectedPreset = PRESET_COMBINATIONS.find(p => p.name === presetName);
+
+    if (selectedPreset && inventory) {
+      const allIngredientsInStock = Object.entries(selectedPreset)
+        .filter(([key]) => key !== 'name' && key !== 'extras')
+        .every(([key, value]) => {
+          const inventoryCategory = inventory[key as keyof typeof inventory];
+          const ingredient = inventoryCategory.find(item => item.name === value);
+          return ingredient && ingredient.stock > 0;
+        });
+
+      // Check stock for extras as well
+      const extrasInStock = selectedPreset.extras ? selectedPreset.extras.every(extraName => {
+        const extraItem = inventory.extras?.find(item => item.name === extraName);
+        return extraItem && extraItem.stock > 0;
+      }) : true; // If no extras in preset, consider it in stock
+
+      if (allIngredientsInStock && extrasInStock) {
+        setValue("oil", selectedPreset.oil);
+        setValue("egg", selectedPreset.egg);
+        setValue("acid", selectedPreset.acid);
+        setValue("mustard", selectedPreset.mustard);
+        setValue("extras", selectedPreset.extras || []);
+      } else {
+        // TODO: Notify user that preset cannot be selected due to out-of-stock items
+        console.warn("Selected preset has out-of-stock ingredients.");
+        event.target.value = ""; // Reset dropdown to placeholder
+        // Clear the form to avoid partial preset application
+        setValue("oil", "");
+        setValue("egg", "");
+        setValue("acid", "");
+        setValue("mustard", "");
+        setValue("extras", []);
+      }
+    }
+  };
+
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
   if (!inventory)
@@ -60,6 +109,45 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
+        <label className="block">
+          <span className="font-medium text-sm sm:text-base">Presets</span>
+          <select
+            onChange={handlePresetChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            defaultValue=""
+          >
+            <option value="" disabled>Select a preset</option>
+            {PRESET_COMBINATIONS.map((preset) => {
+              const ingredientesPrincipais = [preset.oil, preset.egg, preset.acid, preset.mustard];
+              const extras = preset.extras || [];
+              const todosIngredientes = [...ingredientesPrincipais, ...extras];
+              const isAvailable = todosIngredientes.every(ingredientName => {
+                // Encontrar a categoria do ingrediente (oil, egg, acid, mustard, extras)
+                let categoryKey = Object.keys(inventory).find(key => 
+                  inventory[key as keyof typeof inventory]?.some((item: { name: string; }) => item.name === ingredientName)
+                ) as keyof typeof inventory | undefined;
+
+                if (!categoryKey) { // Se não encontrar em oil, egg, acid, mustard, verificar em extras
+                  if (inventory.extras?.some(item => item.name === ingredientName)) {
+                    categoryKey = "extras" as any; // Cast 'extras' to a valid key type, assuming it exists
+                  }
+                }
+
+                if (categoryKey) {
+                  const itemInInventory = inventory[categoryKey]?.find((item: { name: string; }) => item.name === ingredientName);
+                  return itemInInventory && itemInInventory.stock > 0;
+                }
+                return false; // Ingrediente não encontrado no inventário
+              });
+
+              return (
+                <option key={preset.name} value={preset.name} disabled={!isAvailable}>
+                  {preset.name}{!isAvailable ? " (Out of stock)" : ""}
+                </option>
+              );
+            })}
+          </select>
+        </label>
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
