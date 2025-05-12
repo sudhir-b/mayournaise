@@ -26,7 +26,7 @@ const InventorySelector: React.FC<InventorySelectorProps> = ({
       <select 
         value={selected} 
         onChange={(e) => setSelected(e.target.value)}
-        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base bg-white/90 border border-gray-200 hover:border-indigo-300"
+        className="glass block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-all duration-300"
       >
         {items.map((item) => (
           <option 
