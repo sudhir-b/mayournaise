@@ -20,13 +20,13 @@ const InventorySelector: React.FC<InventorySelectorProps> = ({
 }) => {
   return (
     <label className="block">
-      <span className="font-medium capitalize text-sm sm:text-base block mb-2 text-gray-700">
+      <span className="font-medium capitalize text-sm sm:text-base block mb-2 text-amber-800">
         {title}
       </span>
       <select 
         value={selected} 
         onChange={(e) => setSelected(e.target.value)}
-        className="glass block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-all duration-300"
+        className="glass block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-colors duration-300"
       >
         {items.map((item) => (
           <option 

@@ -63,14 +63,14 @@ function Mayournaise() {
         <div className="space-y-5 sm:space-y-6">
           {["oil", "egg", "acid", "mustard"].map((item) => (
             <label key={item} className="block">
-              <span className="font-medium capitalize text-sm sm:text-base block mb-2 text-gray-700">
+              <span className="font-medium capitalize text-sm sm:text-base block mb-2 text-amber-800">
                 {item}
               </span>
               <select
                 {...register(item as keyof SubmitOrderRequest, {
                   required: true,
                 })}
-                className="glass block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-all duration-300"
+                className="glass block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-colors duration-300"
               >
                 {inventory[item as keyof typeof inventory].map((option) => (
                   <option
@@ -88,12 +88,12 @@ function Mayournaise() {
         </div>
 
         <div className="pt-2">
-          <label className="block mb-2 font-medium text-sm sm:text-base text-gray-700">
+          <label className="block mb-2 font-medium text-sm sm:text-base text-amber-800">
             Email
             <input
               type="email"
               {...register("email_address", { required: true })}
-              className="glass mt-2 block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-all duration-300"
+              className="glass mt-2 block w-full rounded-md shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-3 px-4 text-sm sm:text-base hover:bg-white/40 border-transparent hover:border-white/70 transition-colors duration-300"
               placeholder="your@email.com"
             />
           </label>
@@ -104,8 +104,8 @@ function Mayournaise() {
           )}
         </div>
 
-        <div className="mt-8 glass text-sm sm:text-base text-gray-700 p-5 rounded-xl">
-          <h2 className="font-bold uppercase mb-3 text-gray-800">Disclaimers</h2>
+        <div className="mt-8 glass text-sm sm:text-base text-amber-900 p-5 rounded-xl">
+          <h2 className="font-bold uppercase mb-3 text-amber-900">Disclaimers</h2>
           <ul className="space-y-2 list-disc pl-5">
             <li>For legal reasons, this isn't a food business</li>
             <li>You are solely responsible for the resulting taste</li>
@@ -117,7 +117,7 @@ function Mayournaise() {
           <button
             type="button"
             onClick={randomizeIngredients}
-            className="glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white flex items-center justify-center transition-all duration-300"
+            className="glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-amber-900 flex items-center justify-center transition-colors duration-300"
           >
             <span className="mr-2">🪄</span> Randomize
           </button>
@@ -125,10 +125,10 @@ function Mayournaise() {
           <button
             type="submit"
             disabled={isSubmitSuccessful}
-            className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base transition-all duration-300 ${
+            className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base transition-colors duration-300 ${
               isSubmitSuccessful
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                ? "bg-gray-400 text-gray-800 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 text-indigo-100"
             }`}
           >
             {isSubmitSuccessful ? "Reserved! ✓" : "Reserve"}
