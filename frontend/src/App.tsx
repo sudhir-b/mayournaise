@@ -138,7 +138,7 @@ function Mayournaise() {
       
       <div className="flex justify-center mt-10">
         <footer className="text-center text-amber-800 text-xs glass py-3 px-6 rounded-full inline-block bg-white/40">
-          © {new Date().getFullYear()} Ma<i className="text-amber-600">your</i>naise • All rights reserved
+          © {new Date().getFullYear()} Mayournaise • All rights reserved
         </footer>
       </div>
     </div>
