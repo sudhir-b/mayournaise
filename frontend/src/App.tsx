@@ -12,8 +12,8 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
-    formState: { isSubmitSuccessful, errors },
-  } = useForm<SubmitOrderRequest>();
+    formState: { isSubmitSuccessful, errors, isValid },
+  } = useForm<SubmitOrderRequest>({ mode: "onChange" });
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -130,9 +130,9 @@ function Mayournaise() {
           
           <button
             type="submit"
-            disabled={isSubmitSuccessful}
+            disabled={!isValid || isSubmitSuccessful}
             className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base transition-colors duration-300 ${
-              isSubmitSuccessful
+              (!isValid || isSubmitSuccessful)
                 ? "bg-gray-400 text-gray-800 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 text-indigo-100"
             }`}
