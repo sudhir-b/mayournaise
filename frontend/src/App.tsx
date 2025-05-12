@@ -133,8 +133,8 @@ function Mayournaise() {
             disabled={!isValid || isSubmitSuccessful}
             className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base transition-colors duration-300 ${
               (!isValid || isSubmitSuccessful)
-                ? "bg-gray-400 text-gray-800 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-indigo-100"
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed" // Disabled state: Grey bg, lighter grey text
+                : "bg-indigo-600 hover:bg-indigo-800 text-indigo-100 cursor-pointer" // Enabled state: Indigo bg default, darker indigo on hover
             }`}
           >
             {isSubmitSuccessful ? "Reserved! ✓" : "Reserve"}
