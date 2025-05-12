@@ -49,8 +49,8 @@ function Mayournaise() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="text-6xl sm:text-7xl font-extrabold text-center mb-2 sm:mb-3 tracking-tight fancy-title">
-        Mayournaise
+      <h1 className="text-6xl sm:text-7xl font-extrabold text-center mb-2 sm:mb-3 tracking-tight text-amber-900" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        Ma<i className="text-yellow-500 font-bold">your</i>naise
       </h1>
       <p className="text-center text-gray-600 text-sm sm:text-base mb-8 sm:mb-10">
         A silly project by Sudhir
@@ -117,7 +117,7 @@ function Mayournaise() {
           <button
             type="button"
             onClick={randomizeIngredients}
-            className="glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500/80 hover:bg-yellow-500/90 text-white flex items-center justify-center backdrop-blur-md transition-all duration-300"
+            className="glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white flex items-center justify-center transition-all duration-300"
           >
             <span className="mr-2">🪄</span> Randomize
           </button>
@@ -125,10 +125,10 @@ function Mayournaise() {
           <button
             type="submit"
             disabled={isSubmitSuccessful}
-            className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base backdrop-blur-md transition-all duration-300 ${
+            className={`glass py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base transition-all duration-300 ${
               isSubmitSuccessful
-                ? "bg-gray-400/70 text-gray-700 cursor-not-allowed"
-                : "bg-indigo-600/80 hover:bg-indigo-600/90 text-white"
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white"
             }`}
           >
             {isSubmitSuccessful ? "Reserved! ✓" : "Reserve"}
@@ -137,8 +137,8 @@ function Mayournaise() {
       </form>
       
       <div className="flex justify-center mt-10">
-        <footer className="text-center text-amber-700/70 text-xs glass py-3 px-6 rounded-full inline-block">
-          © {new Date().getFullYear()} Mayournaise • All rights reserved
+        <footer className="text-center text-amber-800 text-xs glass py-3 px-6 rounded-full inline-block bg-white/40">
+          © {new Date().getFullYear()} Ma<i className="text-amber-600">your</i>naise • All rights reserved
         </footer>
       </div>
     </div>
