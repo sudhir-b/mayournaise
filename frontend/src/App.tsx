@@ -4,6 +4,7 @@ import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { PRESET_COMBINATIONS } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -12,6 +13,7 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -38,6 +40,51 @@ function Mayournaise() {
     });
   };
 
+  const handlePresetSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    
+    if (!selectedValue || !inventory) {
+      reset({ 
+        oil: '', 
+        egg: '', 
+        acid: '', 
+        mustard: '', 
+        email_address: '' 
+      });
+      return;
+    }
+    
+    const selectedPreset = PRESET_COMBINATIONS.find(preset => preset.name === selectedValue);
+    if (!selectedPreset) return;
+    
+    // Check if all ingredients in the preset are available in inventory
+    const presetAvailable = ["oil", "egg", "acid", "mustard"].every(itemType => {
+      const inventoryCategory = inventory[itemType as keyof typeof inventory];
+      const presetIngredient = selectedPreset[itemType as keyof typeof selectedPreset];
+      
+      return inventoryCategory.some(item => 
+        item.name === presetIngredient && item.stock > 0
+      );
+    });
+    
+    if (presetAvailable) {
+      setValue("oil", selectedPreset.oil);
+      setValue("egg", selectedPreset.egg);
+      setValue("acid", selectedPreset.acid);
+      setValue("mustard", selectedPreset.mustard);
+    } else {
+      // If preset is not available, reset the form
+      reset({ 
+        oil: '', 
+        egg: '', 
+        acid: '', 
+        mustard: '', 
+        email_address: '' 
+      });
+      alert("Some ingredients in this preset are currently out of stock.");
+    }
+  };
+
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
   if (!inventory)
@@ -60,6 +107,40 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
+        <div className="mb-6">
+          <label className="block font-medium text-sm sm:text-base">
+            Preset Combinations
+            <select
+              onChange={handlePresetSelection}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              defaultValue=""
+            >
+              <option value="">Select a preset combination</option>
+              {PRESET_COMBINATIONS.map((preset) => {
+                const isAvailable = inventory && ["oil", "egg", "acid", "mustard"].every(itemType => {
+                  const inventoryCategory = inventory[itemType as keyof typeof inventory];
+                  const presetIngredient = preset[itemType as keyof typeof preset];
+                  return inventoryCategory.some(item => 
+                    item.name === presetIngredient && item.stock > 0
+                  );
+                });
+                
+                return (
+                  <option 
+                    key={preset.name} 
+                    value={preset.name}
+                    disabled={!isAvailable}
+                  >
+                    {preset.name} {!isAvailable ? '(unavailable)' : ''}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Select a preset or customize your mayonnaise below
+          </p>
+        </div>
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
