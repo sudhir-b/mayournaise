@@ -4,6 +4,7 @@ import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { PRESET_COMBINATIONS, PresetCombination } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -13,6 +14,7 @@ function Mayournaise() {
     handleSubmit,
     setValue,
     formState: { isSubmitSuccessful, errors },
+    reset,
   } = useForm<SubmitOrderRequest>();
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
@@ -38,6 +40,40 @@ function Mayournaise() {
     });
   };
 
+  const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPreset = PRESET_COMBINATIONS.find(
+      (preset) => preset.name === event.target.value
+    );
+
+    if (!selectedPreset || !inventory) {
+      reset();
+      return;
+    }
+
+    // Check if all ingredients in the preset are available
+    const isPresetAvailable = ["oil", "egg", "acid", "mustard"].every((item) => {
+      const options = inventory[item as keyof typeof inventory];
+      return options.some(
+        (option) =>
+          option.name === selectedPreset[item as keyof PresetCombination] && 
+          option.stock > 0
+      );
+    });
+
+    if (!isPresetAvailable) {
+      reset();
+      return;
+    }
+
+    // Set form values according to the preset
+    ["oil", "egg", "acid", "mustard"].forEach((item) => {
+      setValue(
+        item as keyof SubmitOrderRequest,
+        selectedPreset[item as keyof PresetCombination]
+      );
+    });
+  };
+
   if (isLoading)
     return <p className="text-center text-lg">Loading inventory...</p>;
   if (!inventory)
@@ -60,6 +96,39 @@ function Mayournaise() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
+        <label className="block">
+          <span className="font-medium text-sm sm:text-base">
+            Preset Combinations
+          </span>
+          <select
+            onChange={handlePresetChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+          >
+            <option value="">Select a preset (or customize below)</option>
+            {PRESET_COMBINATIONS.map((preset) => {
+              const isAvailable = ["oil", "egg", "acid", "mustard"].every(
+                (item) => {
+                  const options = inventory[item as keyof typeof inventory];
+                  return options.some(
+                    (option) =>
+                      option.name === preset[item as keyof PresetCombination] &&
+                      option.stock > 0
+                  );
+                }
+              );
+
+              return (
+                <option
+                  key={preset.name}
+                  value={preset.name}
+                  disabled={!isAvailable}
+                >
+                  {preset.name} {!isAvailable ? "(Out of Stock)" : ""}
+                </option>
+              );
+            })}
+          </select>
+        </label>
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
@@ -72,6 +141,7 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
             >
+              <option value="">Select {item}</option>
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
                   key={option.name}
@@ -79,7 +149,7 @@ function Mayournaise() {
                   disabled={option.stock === 0}
                   className="pl-2"
                 >
-                  {option.name}
+                  {option.name} {option.stock === 0 ? "(Out of Stock)" : ""}
                 </option>
               ))}
             </select>
@@ -117,7 +187,7 @@ function Mayournaise() {
             onClick={randomizeIngredients}
             className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
           >
-            Randomize
+            🪄 Randomize
           </button>
           
           <button
