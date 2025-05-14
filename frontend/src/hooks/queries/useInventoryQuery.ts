@@ -4,7 +4,7 @@ import { PUBLIC_API_URL } from "../../constants";
 
 type InventoryItem = {
   item_name: string;
-  item_type: "oil" | "egg" | "acid" | "mustard";
+  item_type: "oil" | "egg" | "acid" | "mustard" | "extra";
   stock: number;
 };
 
@@ -22,6 +22,7 @@ type CollatedInventory = {
   egg: CollatedInventoryItem[];
   acid: CollatedInventoryItem[];
   mustard: CollatedInventoryItem[];
+  extras: CollatedInventoryItem[];
 };
 
 function shuffle<T>(array: T[]): T[] {
@@ -62,6 +63,7 @@ function useInventoryQuery() {
         egg: [],
         acid: [],
         mustard: [],
+        extras: [],
       } as CollatedInventory
     );
 

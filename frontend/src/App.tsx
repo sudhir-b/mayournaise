@@ -30,7 +30,7 @@ function Mayournaise() {
       const isPresetInStock = Object.entries(selectedPreset.ingredients).every(([key, value]) => {
         if (key === 'extras') {
           return (value as string[]).every(extraName => 
-            inventory.extras.find(extra => extra.name === extraName && extra.stock > 0)
+            inventory.extras.find((extra: { name: string; stock: number; }) => extra.name === extraName && extra.stock > 0)
           );
         }
         return inventory[key as keyof typeof inventory]?.find(item => item.name === value && item.stock > 0);
@@ -40,7 +40,7 @@ function Mayournaise() {
         Object.entries(selectedPreset.ingredients).forEach(([key, value]) => {
           if (key === 'extras') {
             // Clear all extras first
-            inventory.extras.forEach(extra => {
+            inventory.extras.forEach((extra: { name: string; stock: number; }) => {
               setValue(`extras.${extra.name}` as any, false);
             });
             // Set selected extras
@@ -115,7 +115,7 @@ function Mayournaise() {
               if (!inventory) return false;
               if (key === 'extras') {
                 return (value as string[]).every(extraName => 
-                  inventory.extras.find(extra => extra.name === extraName && extra.stock > 0)
+                  inventory.extras.find((extra: { name: string; stock: number; }) => extra.name === extraName && extra.stock > 0)
                 );
               }
               return inventory[key as keyof typeof inventory]?.find(item => item.name === value && item.stock > 0);
