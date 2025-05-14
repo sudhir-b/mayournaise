@@ -1,9 +1,11 @@
+import React, { useState, ChangeEvent } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { PRESET_COMBINATIONS, PresetCombination } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -12,28 +14,64 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+  const [selectedPreset, setSelectedPreset] = useState<string>("");
+
+  const handlePresetChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const presetName = e.target.value;
+    setSelectedPreset(presetName);
+    const preset = PRESET_COMBINATIONS.find((p) => p.name === presetName);
+    if (!preset) {
+      reset();
+      return;
+    }
+    if (!inventory) return;
+
+    const unavailable = (Object.keys(preset) as Array<keyof PresetCombination>)
+      .filter((key) => key !== "name")
+      .find((key) => {
+        const value = preset[key];
+        const option = (inventory as any)[key].find(
+          (item: any) => item.name === value
+        );
+        return !option || option.stock === 0;
+      });
+
+    if (unavailable) {
+      alert("Preset unavailable due to out of stock ingredients.");
+      reset();
+      setSelectedPreset("");
+    } else {
+      setValue("oil", preset.oil);
+      setValue("egg", preset.egg);
+      setValue("acid", preset.acid);
+      setValue("mustard", preset.mustard);
+    }
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
       onError: () => {
         // TODO: handle error
-        // errorToast("Failed to submit order");
       },
     });
   };
-  
+
   const randomizeIngredients = () => {
     if (!inventory) return;
-    
+
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
       const options = inventory[item as keyof typeof inventory];
-      const availableOptions = options.filter(option => option.stock > 0);
-      
+      const availableOptions = options.filter((option) => option.stock > 0);
+
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
-        setValue(item as keyof SubmitOrderRequest, availableOptions[randomIndex].name);
+        setValue(
+          item as keyof SubmitOrderRequest,
+          availableOptions[randomIndex].name
+        );
       }
     });
   };
@@ -56,12 +94,38 @@ function Mayournaise() {
         A silly project by Sudhir
       </p>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 sm:space-y-6"
-      >
-        
-        {["oil", "egg", "acid", "mustard"].map((item) => (
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+        <label className="block">
+          <span className="font-medium capitalize text-sm sm:text-base">
+            Preset
+          </span>
+          <select
+            value={selectedPreset}
+            onChange={handlePresetChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-gray-300"
+          >
+            <option value="">Select a preset</option>
+            {PRESET_COMBINATIONS.map((preset) => {
+              const isAvailable =
+                inventory.oil.some((o) => o.name === preset.oil && o.stock > 0) &&
+                inventory.egg.some((e) => e.name === preset.egg && e.stock > 0) &&
+                inventory.acid.some((a) => a.name === preset.acid && a.stock > 0) &&
+                inventory.mustard.some((m) => m.name === preset.mustard && m.stock > 0);
+              return (
+                <option
+                  key={preset.name}
+                  value={preset.name}
+                  disabled={!isAvailable}
+                  className="pl-2"
+                >
+                  {preset.name}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+
+        {['oil', 'egg', 'acid', 'mustard'].map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
@@ -70,7 +134,7 @@ function Mayournaise() {
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-gray-300"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
@@ -91,7 +155,7 @@ function Mayournaise() {
           <input
             type="email"
             {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-gray-300"
           />
         </label>
         {errors.email_address && (
@@ -119,7 +183,7 @@ function Mayournaise() {
           >
             Randomize
           </button>
-          
+
           <button
             type="submit"
             disabled={isSubmitSuccessful}
