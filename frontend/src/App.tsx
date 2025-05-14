@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { PRESET_COMBINATIONS } from "./constants";
 import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
@@ -13,7 +14,50 @@ function Mayournaise() {
     handleSubmit,
     setValue,
     formState: { isSubmitSuccessful, errors },
+    reset,
   } = useForm<SubmitOrderRequest>();
+
+  const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const presetName = event.target.value;
+    if (!presetName) {
+      reset(); // Reset form if no preset is selected
+      return;
+    }
+
+    const selectedPreset = PRESET_COMBINATIONS.find(p => p.name === presetName);
+    if (selectedPreset && inventory) {
+      // Check stock for all ingredients in the preset
+      const isPresetInStock = Object.entries(selectedPreset.ingredients).every(([key, value]) => {
+        if (key === 'extras') {
+          return (value as string[]).every(extraName => 
+            inventory.extras.find(extra => extra.name === extraName && extra.stock > 0)
+          );
+        }
+        return inventory[key as keyof typeof inventory]?.find(item => item.name === value && item.stock > 0);
+      });
+
+      if (isPresetInStock) {
+        Object.entries(selectedPreset.ingredients).forEach(([key, value]) => {
+          if (key === 'extras') {
+            // Clear all extras first
+            inventory.extras.forEach(extra => {
+              setValue(`extras.${extra.name}` as any, false);
+            });
+            // Set selected extras
+            (value as string[]).forEach(extraName => {
+              setValue(`extras.${extraName}` as any, true);
+            });
+          } else {
+            setValue(key as keyof SubmitOrderRequest, value as string);
+          }
+        });
+      } else {
+        // If preset is out of stock, reset the form and alert user (optional)
+        reset();
+        alert(`${selectedPreset.name} is currently out of stock.`);
+      }
+    }
+  };
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -55,6 +99,35 @@ function Mayournaise() {
       <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
         A silly project by Sudhir
       </p>
+
+      <div className="mb-4 sm:mb-6">
+        <label htmlFor="preset-select" className="block font-medium text-sm sm:text-base mb-1">
+          Choose a Preset:
+        </label>
+        <select 
+          id="preset-select"
+          onChange={handlePresetChange}
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+        >
+          <option value="">-- Select a Preset --</option>
+          {PRESET_COMBINATIONS.map(preset => {
+            const isPresetInStock = Object.entries(preset.ingredients).every(([key, value]) => {
+              if (!inventory) return false;
+              if (key === 'extras') {
+                return (value as string[]).every(extraName => 
+                  inventory.extras.find(extra => extra.name === extraName && extra.stock > 0)
+                );
+              }
+              return inventory[key as keyof typeof inventory]?.find(item => item.name === value && item.stock > 0);
+            });
+            return (
+              <option key={preset.name} value={preset.name} disabled={!isPresetInStock}>
+                {preset.name} {!isPresetInStock && "(Out of stock)"}
+              </option>
+            );
+          })}
+        </select>
+      </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
