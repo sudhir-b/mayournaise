@@ -49,14 +49,16 @@ function useInventoryQuery() {
     );
 
     const inventory = response.data.items.reduce(
-      (inventory, item) => {
+      (acc, item) => {
         const { item_name, item_type, stock } = item;
-        inventory[item_type].push({
+        const keyToUpdate: keyof CollatedInventory = item_type === "extra" ? "extras" : item_type;
+        
+        acc[keyToUpdate].push({
           name: stock === 0 ? `${item_name} - sold out` : item_name,
           stock,
         });
 
-        return inventory;
+        return acc;
       },
       {
         oil: [],
