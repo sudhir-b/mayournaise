@@ -5,6 +5,8 @@ import useSubmitOrderMutation, {
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
 
+import { PRESET_COMBINATIONS } from "./constants";
+
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
@@ -12,8 +14,13 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { isSubmitSuccessful, errors },
+    watch,
   } = useForm<SubmitOrderRequest>();
+
+  // State for selected preset
+  const [selectedPreset, setSelectedPreset] = React.useState<string>("");
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -26,7 +33,7 @@ function Mayournaise() {
   
   const randomizeIngredients = () => {
     if (!inventory) return;
-    
+    setSelectedPreset("");
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
       const options = inventory[item as keyof typeof inventory];
       const availableOptions = options.filter(option => option.stock > 0);
@@ -34,6 +41,8 @@ function Mayournaise() {
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
         setValue(item as keyof SubmitOrderRequest, availableOptions[randomIndex].name);
+      } else {
+        setValue(item as keyof SubmitOrderRequest, "");
       }
     });
   };
@@ -56,12 +65,50 @@ function Mayournaise() {
         A silly project by Sudhir
       </p>
 
+      {/* Preset selector */}
+      <div className="mb-4 sm:mb-6">
+        <label className="block mb-2 text-sm font-medium text-gray-700">Preset combinations
+          <select
+            value={selectedPreset}
+            onChange={e => {
+              const value = e.target.value;
+              setSelectedPreset(value);
+              if (!value) {
+                reset();
+                return;
+              }
+              const preset = PRESET_COMBINATIONS.find(p => p.value === value);
+              if (!preset) return;
+              // Only set if all ingredients in stock
+              const allInStock = ["oil","egg","acid","mustard"].every(cat =>
+                inventory && inventory[cat].some(opt => opt.stock > 0 && opt.name === preset[cat as keyof typeof preset])
+              );
+              if (allInStock) {
+                (['oil', 'egg', 'acid', 'mustard'] as const).forEach(cat => setValue(cat, preset[cat]));
+              } else {
+                reset();
+              }
+            }}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base"
+          >
+            <option value="">Select preset...</option>
+            {PRESET_COMBINATIONS.map(preset => {
+              // Disabled if any ingredient not in stock
+              const allInStock = ["oil","egg","acid","mustard"].every(cat =>
+                inventory && inventory[cat].some(opt => opt.stock > 0 && opt.name === preset[cat as keyof typeof preset])
+              );
+              return <option key={preset.value} value={preset.value} disabled={!allInStock}>{preset.label}</option>
+            })}
+          </select>
+        </label>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6"
       >
         
-        {["oil", "egg", "acid", "mustard"].map((item) => (
+        {['oil', 'egg', 'acid', 'mustard'].map((item) => (
           <label key={item} className="block">
             <span className="font-medium capitalize text-sm sm:text-base">
               {item}
