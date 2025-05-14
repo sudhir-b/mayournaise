@@ -1,3 +1,4 @@
+import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useSubmitOrderMutation, {
@@ -16,7 +17,7 @@ function Mayournaise() {
     setValue,
     reset,
     formState: { isSubmitSuccessful, errors },
-    watch,
+    // watch, // Removed unused 'watch' as it causes typecheck error
   } = useForm<SubmitOrderRequest>();
 
   // State for selected preset
@@ -35,8 +36,9 @@ function Mayournaise() {
     if (!inventory) return;
     setSelectedPreset("");
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
-      const options = inventory[item as keyof typeof inventory];
-      const availableOptions = options.filter(option => option.stock > 0);
+      const catTyped = item as keyof typeof inventory;
+      const options = inventory[catTyped];
+      const availableOptions = options.filter((option: { stock: number }) => option.stock > 0);
       
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
@@ -80,9 +82,12 @@ function Mayournaise() {
               const preset = PRESET_COMBINATIONS.find(p => p.value === value);
               if (!preset) return;
               // Only set if all ingredients in stock
-              const allInStock = ["oil","egg","acid","mustard"].every(cat =>
-                inventory && inventory[cat].some(opt => opt.stock > 0 && opt.name === preset[cat as keyof typeof preset])
-              );
+              const allInStock = ["oil","egg","acid","mustard"].every((cat) => {
+                const catTyped = cat as keyof typeof inventory;
+                return inventory && inventory[catTyped].some((opt: { stock: number; name: string }) =>
+                  opt.stock > 0 && opt.name === preset[cat as keyof typeof preset]
+                );
+              });
               if (allInStock) {
                 (['oil', 'egg', 'acid', 'mustard'] as const).forEach(cat => setValue(cat, preset[cat]));
               } else {
@@ -94,9 +99,12 @@ function Mayournaise() {
             <option value="">Select preset...</option>
             {PRESET_COMBINATIONS.map(preset => {
               // Disabled if any ingredient not in stock
-              const allInStock = ["oil","egg","acid","mustard"].every(cat =>
-                inventory && inventory[cat].some(opt => opt.stock > 0 && opt.name === preset[cat as keyof typeof preset])
-              );
+              const allInStock = ["oil","egg","acid","mustard"].every((cat) => {
+                const catTyped = cat as keyof typeof inventory;
+                return inventory && inventory[catTyped].some((opt: { stock: number; name: string }) =>
+                  opt.stock > 0 && opt.name === preset[cat as keyof typeof preset]
+                );
+              });
               return <option key={preset.value} value={preset.value} disabled={!allInStock}>{preset.label}</option>
             })}
           </select>
