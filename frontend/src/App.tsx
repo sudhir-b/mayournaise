@@ -7,6 +7,12 @@ import useSubmitOrderMutation, {
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
 import { PRESET_COMBINATIONS } from "./constants"; // Import presets
 
+// Define type for individual inventory items (used in lambdas)
+interface CollatedInventoryItem {
+  name: string;
+  stock: number;
+}
+
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
   const submitOrderMutation = useSubmitOrderMutation();
@@ -33,7 +39,7 @@ function Mayournaise() {
 
     ["oil", "egg", "acid", "mustard"].forEach((item) => {
       const options = inventory[item as keyof typeof inventory];
-      const availableOptions = options.filter(option => option.stock > 0);
+      const availableOptions = options.filter((option: CollatedInventoryItem) => option.stock > 0);
 
       if (availableOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableOptions.length);
@@ -43,7 +49,7 @@ function Mayournaise() {
 
     // Also randomize extras (0-3 extras)
     if (inventory.extra && inventory.extra.length > 0) {
-      const availableExtras = inventory.extra.filter(e => e.stock > 0);
+      const availableExtras = inventory.extra.filter((e: CollatedInventoryItem) => e.stock > 0);
       const numExtrasToSelect = Math.floor(Math.random() * Math.min(4, availableExtras.length + 1));
       const selectedExtras: string[] = [];
       const shuffledExtras = [...availableExtras].sort(() => 0.5 - Math.random());
@@ -69,12 +75,12 @@ function Mayournaise() {
 
     // Check stock for all ingredients in the preset
     const isOutOfStock =
-      !inventory.oil.find(i => i.name === selectedPreset.oil && i.stock > 0) ||
-      !inventory.egg.find(i => i.name === selectedPreset.egg && i.stock > 0) ||
-      !inventory.acid.find(i => i.name === selectedPreset.acid && i.stock > 0) ||
-      !inventory.mustard.find(i => i.name === selectedPreset.mustard && i.stock > 0) ||
+      !inventory.oil.find((i: CollatedInventoryItem) => i.name === selectedPreset.oil && i.stock > 0) ||
+      !inventory.egg.find((i: CollatedInventoryItem) => i.name === selectedPreset.egg && i.stock > 0) ||
+      !inventory.acid.find((i: CollatedInventoryItem) => i.name === selectedPreset.acid && i.stock > 0) ||
+      !inventory.mustard.find((i: CollatedInventoryItem) => i.name === selectedPreset.mustard && i.stock > 0) ||
       selectedPreset.extras.some(extraName => {
-        const extraItem = inventory.extra?.find(e => e.name === extraName);
+        const extraItem = inventory.extra?.find((e: CollatedInventoryItem) => e.name === extraName);
         return !extraItem || extraItem.stock === 0;
       });
 
@@ -101,7 +107,7 @@ function Mayournaise() {
       </p>
     );
 
-  const availableExtras = inventory.extra?.filter((e) => e.stock > 0) || [];
+  const availableExtras = inventory.extra?.filter((e: CollatedInventoryItem) => e.stock > 0) || [];
 
   return (
     <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
@@ -128,12 +134,12 @@ function Mayournaise() {
             <option value="">-- Select a Preset --</option>
             {PRESET_COMBINATIONS.map((preset) => {
               const isOutOfStock =
-                !inventory.oil.find(i => i.name === preset.oil && i.stock > 0) ||
-                !inventory.egg.find(i => i.name === preset.egg && i.stock > 0) ||
-                !inventory.acid.find(i => i.name === preset.acid && i.stock > 0) ||
-                !inventory.mustard.find(i => i.name === preset.mustard && i.stock > 0) ||
+                !inventory.oil.find((i: CollatedInventoryItem) => i.name === preset.oil && i.stock > 0) ||
+                !inventory.egg.find((i: CollatedInventoryItem) => i.name === preset.egg && i.stock > 0) ||
+                !inventory.acid.find((i: CollatedInventoryItem) => i.name === preset.acid && i.stock > 0) ||
+                !inventory.mustard.find((i: CollatedInventoryItem) => i.name === preset.mustard && i.stock > 0) ||
                 preset.extras.some(extraName => {
-                  const extraItem = inventory.extra?.find(e => e.name === extraName);
+                  const extraItem = inventory.extra?.find((e: CollatedInventoryItem) => e.name === extraName);
                   return !extraItem || extraItem.stock === 0;
                 });
               return (
@@ -161,7 +167,7 @@ function Mayournaise() {
               })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300 hover:border-gray-400 focus:outline-indigo-500"
             >
-              {inventory[item as keyof typeof inventory].map((option) => (
+              {inventory[item as keyof typeof inventory].map((option: CollatedInventoryItem) => (
                 <option
                   key={option.name}
                   value={option.name}
@@ -182,7 +188,7 @@ function Mayournaise() {
               Extras (Optional)
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-              {inventory.extra?.map((extra) => (
+              {inventory.extra?.map((extra: CollatedInventoryItem) => (
                 <label
                   key={extra.name}
                   className={`flex items-center space-x-2 p-2 rounded-md border transition-all duration-200 ease-in-out ${
@@ -194,7 +200,7 @@ function Mayournaise() {
                   <input
                     type="checkbox"
                     value={extra.name}
-                    {...register("extras" as keyof SubmitOrderRequest)}
+                    {...register("extras")}
                     disabled={extra.stock === 0}
                     className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-400 disabled:opacity-50"
                   />

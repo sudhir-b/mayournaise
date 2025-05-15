@@ -7,6 +7,7 @@ export type SubmitOrderRequest = {
   egg: string;
   acid: string;
   mustard: string;
+  extras?: string[]; // Added extras (optional)
   email_address: string;
 };
 
