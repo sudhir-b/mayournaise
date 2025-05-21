@@ -1,51 +1,51 @@
-# Mayournaise
+# Mayournaise 🥚🧄
 
-## Developing
+## Développement 💻
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Une fois que vous avez créé un projet et installé les dépendances avec `npm install` (ou `pnpm install` ou `yarn`), démarrez un serveur de développement:
 
 ```bash
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# ou démarrez le serveur et ouvrez l'application dans un nouvel onglet du navigateur
 npm run dev -- --open
 ```
 
-## Building
+## Construction 🏗️
 
-To create a production version of your app:
+Pour créer une version de production de votre application:
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Vous pouvez prévisualiser la version de production avec `npm run preview`.
 
-## Lambda
+## Lambda ☁️
 
-Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+Installez cargo lambda avec `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
 
 
-function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
+URL de la fonction: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
-click ops:
- - add cors to function url
- - allow content-type header
- - allow lambda function to touch dynamodb
+Opérations manuelles:
+ - ajouter CORS à l'URL de la fonction
+ - autoriser l'en-tête content-type
+ - autoriser la fonction Lambda à interagir avec DynamoDB
 
 
-## Frontend
+## Frontend 🖥️
 
-cd into frontend
-run `vercel --prod`
+Accédez au répertoire frontend
+Exécutez `vercel --prod`
 
-## TODO
-- monitoring for Lambda function usage
-- add a real referral code mechanism
-- randomise button for options
-- add ability to add extras like garlic, smoke, harissa, etc.
-- per-email limit on ordering?
-- make frontend pretty
+## À Faire 📝
+- surveillance de l'utilisation des fonctions Lambda
+- ajouter un véritable mécanisme de code de parrainage
+- bouton de randomisation pour les options
+- ajouter la possibilité d'ajouter des extras comme l'ail, la fumée, la harissa, etc.
+- limite de commande par email?
+- rendre l'interface utilisateur plus attrayante
