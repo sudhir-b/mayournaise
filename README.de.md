@@ -1,6 +1,6 @@
-# Mayournaise 🥫
+# Mayournaise 🥫 🧪 🍳
 
-## Entwicklung 💻
+## Entwicklung 💻 🛠️
 
 Nachdem Sie ein Projekt erstellt und Abhängigkeiten mit `npm install` (oder `pnpm install` oder `yarn`) installiert haben, starten Sie einen Entwicklungsserver:
 
@@ -11,7 +11,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Erstellen einer Produktionsversion 🏗️
+## Erstellen einer Produktionsversion 🏗️ 📦
 
 So erstellen Sie eine Produktionsversion Ihrer App:
 
@@ -19,33 +19,34 @@ So erstellen Sie eine Produktionsversion Ihrer App:
 npm run build
 ```
 
-Sie können die Produktionsversion mit `npm run preview` anzeigen.
+Sie können die Produktionsversion mit `npm run preview` anzeigen. 🔍
 
-## Lambda 🚀
+## Lambda 🚀 ☁️
 
-Installieren Sie cargo lambda mit `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+Installieren Sie cargo lambda mit `curl -fsSL https://cargo-lambda.info/install.sh | sh` 📥
 
 ```bash
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
 ```
 
-Funktions-URL: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
+Funktions-URL: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/ 🔗
 
-Manuelle Einstellungen:
- - CORS zur Funktions-URL hinzufügen
- - Content-Type-Header erlauben
- - Lambda-Funktion Zugriff auf DynamoDB gewähren
+Manuelle Einstellungen: ⚙️
+ - CORS zur Funktions-URL hinzufügen 🌐
+ - Content-Type-Header erlauben 📋
+ - Lambda-Funktion Zugriff auf DynamoDB gewähren 🔐
 
-## Frontend 🖥️
+## Frontend 🖥️ 🎨
 
-Wechseln Sie in das Frontend-Verzeichnis
-Führen Sie `vercel --prod` aus
+Wechseln Sie in das Frontend-Verzeichnis 📁
+Führen Sie `vercel --prod` aus 🚀
 
-## Noch zu tun 📝
-- Überwachung der Lambda-Funktionsnutzung
-- Einen echten Empfehlungscode-Mechanismus hinzufügen
-- Zufallsbutton für Optionen
-- Möglichkeit zum Hinzufügen von Extras wie Knoblauch, Rauch, Harissa usw.
-- Bestelllimit pro E-Mail?
-- Frontend verschönern
+## Noch zu tun 📝 ✅
+
+- Überwachung der Lambda-Funktionsnutzung 📊
+- Einen echten Empfehlungscode-Mechanismus hinzufügen 👥
+- Zufallsbutton für Optionen 🎲
+- Möglichkeit zum Hinzufügen von Extras wie Knoblauch, Rauch, Harissa usw. 🧄
+- Bestelllimit pro E-Mail? 📧
+- Frontend verschönern ✨
