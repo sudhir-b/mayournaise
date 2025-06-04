@@ -1,6 +1,6 @@
-# Mayournaise
+# Mayournaise 🍳
 
-## Développement
+## Développement 💻
 
 Une fois que vous avez créé un projet et installé les dépendances avec `npm install` (ou `pnpm install` ou `yarn`), démarrez un serveur de développement :
 
@@ -11,7 +11,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Construction
+## Construction 🏗️
 
 Pour créer une version de production de votre application :
 
@@ -21,7 +21,7 @@ npm run build
 
 Vous pouvez prévisualiser la version de production avec `npm run preview`.
 
-## Lambda
+## Lambda ☁️
 
 Installez cargo lambda avec `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
@@ -32,21 +32,21 @@ cargo lambda deploy --enable-function-url mayournaise --profile personal
 url de la fonction : https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
 opérations de clic :
- - ajouter cors à l'url de la fonction
- - autoriser l'en-tête content-type
- - autoriser la fonction lambda à interagir avec dynamodb
+ - ajouter cors à l'url de la fonction ➕
+ - autoriser l'en-tête content-type ✅
+ - autoriser la fonction lambda à interagir avec dynamodb 💾
 
 
-## Frontend
+## Frontend 🌐
 
 cd dans frontend
 exécutez `vercel --prod`
 
-## À faire
+## À faire 📝
 
-- surveillance de l'utilisation de la fonction Lambda
-- ajouter un véritable mécanisme de code de parrainage
-- bouton aléatoire pour les options
-- ajouter la possibilité d'ajouter des extras comme l'ail, la fumée, l'harissa, etc.
-- limite de commande par e-mail ?
-- rendre le frontend joli
+- surveillance de l'utilisation de la fonction Lambda 📊
+- ajouter un véritable mécanisme de code de parrainage 🎁
+- bouton aléatoire pour les options 🎲
+- ajouter la possibilité d'ajouter des extras comme l'ail, la fumée, l'harissa, etc. 🌶️
+- limite de commande par e-mail ? 📧
+- rendre le frontend joli ✨
