@@ -1,5 +1,7 @@
 # Mayournaise
 
+*[Dieser Text ist auch auf Deutsch verfügbar.](README.de.md)*
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:

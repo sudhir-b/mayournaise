@@ -1,5 +1,7 @@
 # 🥪 Mayournaise
 
+*[This document is also available in English.](README.md)*
+
 ## 🚀 Entwicklung
 
 Nachdem du ein Projekt erstellt und die Abhängigkeiten mit `npm install` (oder `pnpm install` bzw. `yarn`) installiert hast, starte den Entwicklungsserver:
