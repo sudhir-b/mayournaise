@@ -8,6 +8,7 @@ export type SubmitOrderRequest = {
   acid: string;
   mustard: string;
   email_address: string;
+  referral_code?: string;
 };
 
 function useSubmitOrderMutation() {

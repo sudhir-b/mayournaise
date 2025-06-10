@@ -58,6 +58,7 @@ pub struct Order {
     pub egg: String,
     pub acid: String,
     pub mustard: String,
+    pub referral_code: Option<String>,
 }
 
 impl Order {
@@ -85,7 +86,9 @@ impl Order {
             "mustard".to_string(),
             AttributeValue::S(self.mustard.clone()),
         );
-
+        if let Some(referral) = &self.referral_code {
+            map.insert("referral_code".to_string(), AttributeValue::S(referral.clone()));
+        }
         map
     }
 

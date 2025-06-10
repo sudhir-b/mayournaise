@@ -12,6 +12,7 @@ function Mayournaise() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
 
@@ -99,6 +100,28 @@ function Mayournaise() {
             This field is required
           </span>
         )}
+
+        <label className="block mb-1 font-medium text-sm sm:text-base">
+          Referral code (optional)
+          <input
+            type="text"
+            {...register("referral_code")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+          />
+        </label>
+
+        {(() => {
+          const email = watch("email_address");
+          if (email && /^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+            const base64 = btoa(email);
+            return (
+              <div className="text-xs sm:text-sm text-gray-700 mb-2">
+                Your referral code: <span className="font-mono select-all bg-gray-100 border rounded px-1">{base64}</span>
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
