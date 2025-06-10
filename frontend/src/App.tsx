@@ -4,6 +4,8 @@ import useSubmitOrderMutation, {
   SubmitOrderRequest,
 } from "./hooks/mutations/useSubmitOrderMutation";
 import useInventoryQuery from "./hooks/queries/useInventoryQuery";
+import { useRef, useEffect, useState } from "react";
+import { REFERRAL_CODES } from "./constants";
 
 function Mayournaise() {
   const { data: inventory, isLoading } = useInventoryQuery();
@@ -14,6 +16,19 @@ function Mayournaise() {
     setValue,
     formState: { isSubmitSuccessful, errors },
   } = useForm<SubmitOrderRequest>();
+
+  // Referral code rotation state
+  const [referralIdx, setReferralIdx] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setReferralIdx((i) => (i + 1) % REFERRAL_CODES.length);
+    }, 2500);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   const onSubmit: SubmitHandler<SubmitOrderRequest> = (data) => {
     submitOrderMutation.mutate(data, {
@@ -133,6 +148,16 @@ function Mayournaise() {
           </button>
         </div>
       </form>
+      <div className="mt-8 flex flex-col items-center">
+        <span className="text-xs mb-1 text-gray-500">Referral Code:</span>
+        <div
+          className="bg-yellow-50 text-yellow-700 text-lg tracking-wider font-mono rounded-2xl shadow-neumorph-out px-6 py-2 border border-yellow-200 transition-all duration-300"
+          aria-live="polite"
+          key={REFERRAL_CODES[referralIdx]}
+        >
+          {REFERRAL_CODES[referralIdx]}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,2 +1,19 @@
-
 export const PUBLIC_API_URL = "https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws";
+
+export const REFERRAL_CODES = [
+  "EGGSTRASPREAD",
+  "MAYO4LIFE",
+  "SMOOTHSPREAD21",
+  "MAYONNAISEMAGIC",
+  "YOLOMAYO",
+  "HEAVYWHIPPER",
+  "WHITEMIRACLE",
+  "SPREADTHELOVE",
+  "EMULSIFYTHIS",
+  "SAUCYGOLDEN",
+  "TANGYWHISK",
+  "OILONMYSANDWICH",
+  "PASTELSPREAD",
+  "CREAMDREAM",
+  "GOOPTHEREITIS",
+];
