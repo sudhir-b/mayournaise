@@ -48,11 +48,11 @@ function Mayournaise() {
     );
 
   return (
-    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
+    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8 rounded-3xl bg-[#fffdf6] shadow-2xl border border-[#efe6cb]" >
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
-      <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
+      <p className="text-center text-yellow-900/60 text-sm sm:text-base mb-6 sm:mb-8 drop-shadow-sm">
         A silly project by Sudhir
       </p>
 
@@ -70,7 +70,7 @@ function Mayournaise() {
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="mt-1 block w-full rounded-md border-[#eddc9f] shadow-lg shadow-[#f0ecd0] bg-[#fffbe7] focus:border-yellow-300 focus:ring-2 focus:ring-yellow-200 focus:ring-opacity-80 py-2 px-3 text-sm sm:text-base outline outline-1 outline-[#dbc26a] border-2"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
@@ -91,7 +91,7 @@ function Mayournaise() {
           <input
             type="email"
             {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="mt-1 block w-full rounded-xl border-[#eddc9f] shadow-lg shadow-[#f0ecd0] bg-[#fffbe7] focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 focus:ring-opacity-80 py-2 px-3 text-sm sm:text-base outline outline-1 outline-[#dbc26a] border-2"
           />
         </label>
         {errors.email_address && (
@@ -100,7 +100,7 @@ function Mayournaise() {
           </span>
         )}
 
-        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
+        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-yellow-50 p-4 rounded-xl border-2 border-[#e7d7ac] shadow-inner">
           <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
           <p>
             For legal reasons, this isn't a food business
