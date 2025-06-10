@@ -49,7 +49,7 @@ function Mayournaise() {
     );
 
   return (
-    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
+    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8 bg-neumorph-bg shadow-neumorph-out rounded-3xl">
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
@@ -64,14 +64,14 @@ function Mayournaise() {
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
-            <span className="font-medium capitalize text-sm sm:text-base">
+            <span className="font-medium capitalize text-sm sm:text-base text-gray-700">
               {item}
             </span>
             <select
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="mt-1 block w-full bg-neumorph-input shadow-neumorph-in rounded-xl py-3 px-4 text-sm sm:text-base text-gray-700 focus:shadow-neumorph-pressed outline-none transition-shadow duration-200"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
@@ -87,12 +87,12 @@ function Mayournaise() {
           </label>
         ))}
 
-        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
+        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base text-gray-700">
           Email
           <input
             type="email"
             {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="mt-1 block w-full bg-neumorph-input shadow-neumorph-in rounded-xl py-3 px-4 text-sm sm:text-base text-gray-700 focus:shadow-neumorph-pressed outline-none transition-shadow duration-200"
           />
         </label>
         {errors.email_address && (
@@ -101,30 +101,62 @@ function Mayournaise() {
           </span>
         )}
 
-        <label className="block mb-1 font-medium text-sm sm:text-base">
+        <label className="block mb-1 font-medium text-sm sm:text-base text-gray-700">
           Referral code (optional)
           <input
             type="text"
             {...register("referral_code")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="mt-1 block w-full bg-neumorph-input shadow-neumorph-in rounded-xl py-3 px-4 text-sm sm:text-base text-gray-700 focus:shadow-neumorph-pressed outline-none transition-shadow duration-200"
           />
         </label>
 
         {(() => {
           const email = watch("email_address");
           if (email && /^[^@]+@[^@]+\.[^@]+$/.test(email)) {
-            const base64 = btoa(email);
+            // Mayonnaise-themed referral codes
+            const mayoCodes = [
+              "MAYO-MAGIC",
+              "CREAMY-DREAM",
+              "EGGCELLENT",
+              "TANGY-TWIST",
+              "WHISK-WIZARD",
+              "EMULSIFY-PRO",
+              "OLEIC-HERO",
+              "YOLK-MASTER",
+              "SMOOTH-OPERATOR",
+              "GOLDEN-RATIO",
+              "MAYO-CHEF",
+              "SILKY-SMOOTH",
+              "RICH-BLEND",
+              "PERFECT-EMULSION",
+              "CREAMY-DELIGHT"
+            ];
+            
+            // Create a deterministic but rotating selection based on email and current week
+            const emailHash = email.split('').reduce((hash, char) => {
+              return ((hash << 5) - hash) + char.charCodeAt(0);
+            }, 0);
+            
+            // Get current week number for rotation
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const weekNumber = Math.ceil(((now.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7);
+            
+            // Combine email hash with week for consistent but rotating codes
+            const codeIndex = Math.abs(emailHash + weekNumber) % mayoCodes.length;
+            const selectedCode = mayoCodes[codeIndex];
+            
             return (
               <div className="text-xs sm:text-sm text-gray-700 mb-2">
-                Your referral code: <span className="font-mono select-all bg-gray-100 border rounded px-1">{base64}</span>
+                Your referral code: <span className="font-mono select-all bg-neumorph-input shadow-neumorph-in rounded-xl px-3 py-2 text-gray-700 font-semibold">{selectedCode}</span>
               </div>
             );
           }
           return null;
         })()}
 
-        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
-          <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
+        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-neumorph-input shadow-neumorph-in p-4 rounded-2xl">
+          <h2 className="font-bold uppercase mb-2 text-gray-700">Disclaimers</h2>
           <p>
             For legal reasons, this isn't a food business
             <br />
@@ -138,7 +170,7 @@ function Mayournaise() {
           <button
             type="button"
             onClick={randomizeIngredients}
-            className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
+            className="py-3 px-4 font-semibold rounded-2xl bg-neumorph-bg shadow-neumorph-out hover:shadow-neumorph-pressed active:shadow-neumorph-pressed focus:outline-none text-sm sm:text-base text-gray-700 transition-shadow duration-200"
           >
             Randomize
           </button>
@@ -146,10 +178,10 @@ function Mayournaise() {
           <button
             type="submit"
             disabled={isSubmitSuccessful}
-            className={`py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
+            className={`py-3 px-4 font-semibold rounded-2xl focus:outline-none text-sm sm:text-base transition-shadow duration-200 ${
               isSubmitSuccessful
-                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                ? "bg-neumorph-bg shadow-neumorph-in text-gray-500 cursor-not-allowed"
+                : "bg-neumorph-bg shadow-neumorph-out hover:shadow-neumorph-pressed active:shadow-neumorph-pressed text-gray-700"
             }`}
           >
             {isSubmitSuccessful ? "Reserved!" : "Reserve"}
