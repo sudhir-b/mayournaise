@@ -48,7 +48,7 @@ function Mayournaise() {
     );
 
   return (
-    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
+    <div className="text-center max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
