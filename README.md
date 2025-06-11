@@ -1,6 +1,8 @@
-# Mayournaise
+# Mayournaise 🥪
 
-## Developing
+[🇮🇹 Versione italiana](README_IT.md)
+
+## Developing 💻
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
@@ -11,7 +13,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+## Building 🏗️
 
 To create a production version of your app:
 
@@ -21,7 +23,7 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-## Lambda
+## Lambda ☁️
 
 Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
@@ -37,12 +39,12 @@ click ops:
  - allow lambda function to touch dynamodb
 
 
-## Frontend
+## Frontend 🎨
 
 cd into frontend
 run `vercel --prod`
 
-## TODO
+## TODO 📝
 - monitoring for Lambda function usage
 - add a real referral code mechanism
 - randomise button for options
