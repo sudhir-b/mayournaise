@@ -1,6 +1,6 @@
-# Mayournaise (Version Française)
+# 🥫 Mayournaise (Version Française) 🇫🇷
 
-## Développement
+## 🛠️ Développement
 
 Une fois que vous avez créé un projet et installé les dépendances avec `npm install` (ou `pnpm install` ou `yarn`), lancez un serveur de développement :
 
@@ -11,7 +11,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Construction
+## 🏗️ Construction
 
 Pour créer une version de production de votre application :
 
@@ -21,7 +21,7 @@ npm run build
 
 Vous pouvez pré-visualiser le build de production avec `npm run preview`.
 
-## Lambda
+## ☁️ Lambda
 
 Installez Cargo Lambda avec la commande :
 
@@ -39,11 +39,11 @@ cargo lambda deploy --enable-function-url mayournaise --profile personal
 URL de la fonction : https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
 Actions à effectuer dans la console AWS :
-- Ajouter CORS à l'URL de la fonction
-- Autoriser l'en-tête `content-type`
-- Autoriser la fonction Lambda à accéder à DynamoDB
+- 🔄 Ajouter CORS à l'URL de la fonction
+- 📥 Autoriser l'en-tête `content-type`
+- 🔑 Autoriser la fonction Lambda à accéder à DynamoDB
 
-## Frontend
+## 🎨 Frontend
 
 Positionnez-vous dans le dossier `frontend` :
 
@@ -57,11 +57,11 @@ Puis déployez avec :
 vercel --prod
 ```
 
-## À FAIRE
+## 📋 À FAIRE
 
-- Mettre en place la surveillance (monitoring) de l'utilisation de la fonction Lambda
-- Ajouter un véritable mécanisme de code de parrainage
-- Bouton de randomisation pour les options
-- Ajouter la possibilité d'ajouter des extras (ail, fumé, harissa, etc.)
-- Limite par e-mail sur la commande ?
-- Embellir le frontend
+- 🚨 Mettre en place la surveillance (monitoring) de l'utilisation de la fonction Lambda
+- 🏷️ Ajouter un véritable mécanisme de code de parrainage
+- 🎲 Bouton de randomisation pour les options
+- ➕ Ajouter la possibilité d'ajouter des extras (ail, fumé, harissa, etc.)
+- 📧 Limite par e-mail sur la commande ?
+- 💅 Embellir le frontend
