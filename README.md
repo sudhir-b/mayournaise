@@ -23,24 +23,40 @@ You can preview the production build with `npm run preview`.
 
 ## ☁️ Lambda
 
-Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+Install Cargo Lambda with the command:
 
+```bash
+curl -fsSL https://cargo-lambda.info/install.sh | sh
+```
+
+Then:
+
+```bash
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
+```
 
+Function URL: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
-function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
-
-click ops:
- - 🔄 add cors to function url
- - 📥 allow content-type header
- - 🔑 allow lambda function to touch dynamodb
+Actions to perform in the AWS console:
+- 🔄 add cors to function url
+- 📥 allow content-type header
+- 🔑 allow lambda function to touch dynamodb
 
 
 ## 🎨 Frontend
 
-cd into frontend
-run `vercel --prod`
+Navigate to the `frontend` folder:
+
+```bash
+cd frontend
+```
+
+Then deploy with:
+
+```bash
+vercel --prod
+```
 
 ## 📋 TODO
 - 🚨 monitoring for Lambda function usage
