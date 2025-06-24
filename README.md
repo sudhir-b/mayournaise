@@ -1,51 +1,51 @@
 # Mayournaise
 
-## Developing
+## Développement
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Une fois que vous avez créé un projet et installé les dépendances avec `npm install` (ou `pnpm install` ou `yarn`), démarrez un serveur de développement :
 
 ```bash
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# ou démarrer le serveur et ouvrir l'application dans un nouvel onglet de navigateur
 npm run dev -- --open
 ```
 
-## Building
+## Construction
 
-To create a production version of your app:
+Pour créer une version de production de votre application :
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Vous pouvez prévisualiser la construction de production avec `npm run preview`.
 
 ## Lambda
 
-Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+Installer cargo lambda avec `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
 
 
-function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
+url de la fonction : https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
-click ops:
- - add cors to function url
- - allow content-type header
- - allow lambda function to touch dynamodb
+opérations à faire :
+ - ajouter CORS à l'URL de la fonction
+ - autoriser l'en-tête content-type
+ - permettre à la fonction lambda d'accéder à dynamodb
 
 
 ## Frontend
 
-cd into frontend
-run `vercel --prod`
+entrer dans le répertoire frontend
+exécuter `vercel --prod`
 
-## TODO
-- monitoring for Lambda function usage
-- add a real referral code mechanism
-- randomise button for options
-- add ability to add extras like garlic, smoke, harissa, etc.
-- per-email limit on ordering?
-- make frontend pretty
+## À FAIRE
+- surveillance de l'utilisation de la fonction Lambda
+- ajouter un véritable mécanisme de code de parrainage
+- bouton de randomisation pour les options
+- ajouter la possibilité d'ajouter des extras comme l'ail, la fumée, l'harissa, etc.
+- limite par email sur les commandes ?
+- rendre le frontend plus joli
