@@ -52,9 +52,31 @@ function Mayournaise() {
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
-      <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
+      <p className="text-center text-gray-600 text-sm sm:text-base mb-4">
         A silly project by Sudhir
       </p>
+      
+      {/* Jokey Stats Section */}
+      <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 p-4 rounded-lg border-2 border-yellow-300 mb-6 sm:mb-8">
+        <h2 className="text-lg font-bold text-yellow-800 mb-2">🇬🇧 Official UK Mayo Stats™</h2>
+        <div className="text-xs sm:text-sm text-yellow-700 space-y-1">
+          <div className="flex justify-between">
+            <span>UK Mayo consumed annually:</span>
+            <span className="font-mono">47,382,593 jars</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Mayournaise units delivered:</span>
+            <span className="font-mono font-bold text-red-600">3 units</span>
+          </div>
+          <div className="flex justify-between border-t border-yellow-400 pt-1 mt-2">
+            <span className="font-bold">Market penetration:</span>
+            <span className="font-mono font-bold">0.0000063%</span>
+          </div>
+        </div>
+        <p className="text-xs text-yellow-600 mt-2 italic">
+          *Statistics compiled by the Institute of Obviously Made-Up Food Data
+        </p>
+      </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
