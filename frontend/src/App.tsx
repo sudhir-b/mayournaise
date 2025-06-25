@@ -57,15 +57,15 @@ function Mayournaise() {
       </p>
 
       {/* Mayo Stats Section */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 sm:mb-8 text-xs sm:text-sm">
-        <h2 className="font-bold text-yellow-800 mb-2 text-center">📊 MAYO REALITY CHECK</h2>
-        <div className="text-yellow-700 space-y-1">
-          <p><strong>UK mayo consumption:</strong> 1.6kg per person per year</p>
-          <p><strong>UK "heavy mayo users":</strong> 7.9 million people</p>
-          <p><strong>Global mayo market:</strong> $12.39 billion (2024)</p>
-          <p><strong>Ma<i>your</i>naise units delivered:</strong> 3 (probably)</p>
-          <p className="text-center text-yellow-600 italic mt-2">
-            🤔 We're either disrupting the mayo industry or severely behind target...
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 sm:mb-8 text-xs sm:text-sm">
+        <h2 className="font-semibold text-gray-800 mb-3 text-center">Market Context</h2>
+        <div className="text-gray-700 space-y-2">
+          <p><strong>UK mayonnaise consumption:</strong> 1.6kg per person per year</p>
+          <p><strong>UK frequent consumers:</strong> 7.9 million people</p>
+          <p><strong>Global mayonnaise market:</strong> $12.39 billion (2024)</p>
+          <p><strong>Ma<i>your</i>naise units delivered:</strong> 3</p>
+          <p className="text-center text-gray-600 text-xs mt-3 pt-2 border-t border-gray-200">
+            Small batch, artisanal approach to mayonnaise distribution
           </p>
         </div>
       </div>
