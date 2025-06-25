@@ -52,9 +52,23 @@ function Mayournaise() {
       <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
         Ma<i className="text-yellow-500">your</i>naise
       </h1>
-      <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
+      <p className="text-center text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">
         A silly project by Sudhir
       </p>
+
+      {/* Mayo Stats Section */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 sm:mb-8 text-xs sm:text-sm">
+        <h2 className="font-bold text-yellow-800 mb-2 text-center">📊 MAYO REALITY CHECK</h2>
+        <div className="text-yellow-700 space-y-1">
+          <p><strong>UK mayo consumption:</strong> 1.6kg per person per year</p>
+          <p><strong>UK "heavy mayo users":</strong> 7.9 million people</p>
+          <p><strong>Global mayo market:</strong> $12.39 billion (2024)</p>
+          <p><strong>Ma<i>your</i>naise units delivered:</strong> 3 (probably)</p>
+          <p className="text-center text-yellow-600 italic mt-2">
+            🤔 We're either disrupting the mayo industry or severely behind target...
+          </p>
+        </div>
+      </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
