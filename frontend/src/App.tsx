@@ -39,22 +39,33 @@ function Mayournaise() {
   };
 
   if (isLoading)
-    return <p className="text-center text-lg">Loading inventory...</p>;
+    return (
+      <div className="relative min-h-screen floating-elements flex items-center justify-center">
+        <div className="glass-strong rounded-2xl px-8 py-6 text-center">
+          <p className="text-white text-lg drop-shadow-sm">Loading inventory...</p>
+        </div>
+      </div>
+    );
   if (!inventory)
     return (
-      <p className="text-center text-lg text-red-600">
-        Failed to load inventory.
-      </p>
+      <div className="relative min-h-screen floating-elements flex items-center justify-center">
+        <div className="glass-strong rounded-2xl px-8 py-6 text-center">
+          <p className="text-red-300 text-lg drop-shadow-sm">
+            Failed to load inventory.
+          </p>
+        </div>
+      </div>
     );
 
   return (
-    <div className="text-center max-w-md mx-auto px-4 py-6 sm:px-6 sm:py-8">
-      <h1 className="text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3">
-        Ma<i className="text-yellow-500">your</i>naise
-      </h1>
-      <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
-        A silly project by Sudhir
-      </p>
+    <div className="relative min-h-screen floating-elements">
+      <div className="glass-strong rounded-2xl text-center max-w-md mx-auto px-6 py-8 sm:px-8 sm:py-10 m-4">
+        <h1 className="sparkle text-6xl sm:text-6xl font-bold text-center mb-2 sm:mb-3 text-white drop-shadow-lg">
+          Ma<i className="text-yellow-300 drop-shadow-md">your</i>naise
+        </h1>
+        <p className="text-center text-white/80 text-sm sm:text-base mb-6 sm:mb-8 drop-shadow-sm">
+          A silly project by Sudhir
+        </p>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -63,21 +74,21 @@ function Mayournaise() {
         
         {["oil", "egg", "acid", "mustard"].map((item) => (
           <label key={item} className="block">
-            <span className="font-medium capitalize text-sm sm:text-base">
+            <span className="font-medium capitalize text-sm sm:text-base text-white drop-shadow-sm">
               {item}
             </span>
             <select
               {...register(item as keyof SubmitOrderRequest, {
                 required: true,
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+              className="glass-input mt-2 block w-full rounded-xl py-3 px-4 text-sm sm:text-base text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300"
             >
               {inventory[item as keyof typeof inventory].map((option) => (
                 <option
                   key={option.name}
                   value={option.name}
                   disabled={option.stock === 0}
-                  className="pl-2"
+                  className="bg-gray-800 text-white"
                 >
                   {option.name}
                 </option>
@@ -86,23 +97,24 @@ function Mayournaise() {
           </label>
         ))}
 
-        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base">
+        <label className="block mt-6 sm:mt-8 mb-1 font-medium text-sm sm:text-base text-white drop-shadow-sm">
           Email
           <input
             type="email"
             {...register("email_address", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 text-sm sm:text-base outline outline-1 outline-gray-300"
+            className="glass-input mt-2 block w-full rounded-xl py-3 px-4 text-sm sm:text-base text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300"
+            placeholder="your@email.com"
           />
         </label>
         {errors.email_address && (
-          <span className="text-red-500 text-xs sm:text-sm">
+          <span className="text-red-300 text-xs sm:text-sm drop-shadow-sm">
             This field is required
           </span>
         )}
 
-        <div className="mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-gray-700 bg-gray-100 p-4 rounded-md border border-gray-300">
-          <h2 className="font-bold uppercase mb-2">Disclaimers</h2>
-          <p>
+        <div className="glass mt-6 sm:mt-8 mb-4 text-xs sm:text-sm text-white/90 p-4 rounded-xl">
+          <h2 className="font-bold uppercase mb-2 text-white drop-shadow-sm">Disclaimers</h2>
+          <p className="drop-shadow-sm">
             For legal reasons, this isn't a food business
             <br />
             You are solely responsible for the resulting taste
@@ -115,24 +127,25 @@ function Mayournaise() {
           <button
             type="button"
             onClick={randomizeIngredients}
-            className="py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
+            className="glass-button py-3 px-4 font-semibold rounded-xl text-sm sm:text-base text-white focus:outline-none focus:ring-2 focus:ring-white/50"
           >
-            Randomize
+            ✨ Randomize
           </button>
           
           <button
             type="submit"
             disabled={isSubmitSuccessful}
-            className={`py-3 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 text-sm sm:text-base ${
+            className={`glass-button py-3 px-4 font-semibold rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-white/50 ${
               isSubmitSuccessful
-                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                ? "opacity-60 cursor-not-allowed text-white/70"
+                : "text-white"
             }`}
           >
-            {isSubmitSuccessful ? "Reserved!" : "Reserve"}
+            {isSubmitSuccessful ? "✅ Reserved!" : "🥄 Reserve"}
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }
