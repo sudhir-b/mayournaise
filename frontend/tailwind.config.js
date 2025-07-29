@@ -2,7 +2,11 @@
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Nunito", "Inter", "system-ui", "Avenir", "Helvetica", "Arial", "sans-serif"],
+      },
+    },
   },
   plugins: [],
   darkMode: false,
