@@ -141,9 +141,11 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Mayournaise />
-    </QueryClientProvider>
+    <div className="min-h-screen bg-blue-500">
+      <QueryClientProvider client={queryClient}>
+        <Mayournaise />
+      </QueryClientProvider>
+    </div>
   );
 }
 
