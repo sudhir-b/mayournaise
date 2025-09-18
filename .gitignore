@@ -1,0 +1,30 @@
+# Top-level gitignore for the project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+*.log
+*.local
+
+# Rust / Backend
+target/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp

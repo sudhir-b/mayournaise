@@ -1,8 +1,8 @@
 # Mayournaise
 
-## Developing
+## Développement (Developing)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Une fois que vous avez créé un projet et installé les dépendances avec `npm install` (ou `pnpm install` ou `yarn`), démarrez un serveur de développement :
 
 ```bash
 npm run dev
@@ -11,19 +11,19 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+## Build (Building)
 
-To create a production version of your app:
+Pour créer une version de production de votre application :
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Vous pouvez prévisualiser la version de production avec `npm run preview`.
 
 ## Lambda
 
-Install cargo lambda with `curl -fsSL https://cargo-lambda.info/install.sh | sh`
+Installez cargo lambda avec `curl -fsSL https://cargo-lambda.info/install.sh | sh`
 
 cargo lambda build --arm64 --release
 cargo lambda deploy --enable-function-url mayournaise --profile personal
@@ -32,20 +32,20 @@ cargo lambda deploy --enable-function-url mayournaise --profile personal
 function url: https://eo2rkpwkcqr36lclwmighanldm0xuzpx.lambda-url.eu-west-1.on.aws/
 
 click ops:
- - add cors to function url
- - allow content-type header
- - allow lambda function to touch dynamodb
+ - ajouter CORS à l’URL de la fonction (add CORS to function URL)
+ - autoriser l’en-tête Content-Type (allow Content-Type header)
+ - autoriser la fonction Lambda à accéder à DynamoDB (allow Lambda function to touch DynamoDB)
 
 
 ## Frontend
 
-cd into frontend
-run `vercel --prod`
+Placez-vous dans le dossier frontend
+Exécutez `vercel --prod`
 
-## TODO
-- monitoring for Lambda function usage
-- add a real referral code mechanism
-- randomise button for options
-- add ability to add extras like garlic, smoke, harissa, etc.
-- per-email limit on ordering?
-- make frontend pretty
+## À faire (TODO)
+- surveillance/monitoring de l’utilisation de la fonction Lambda
+- ajouter un véritable mécanisme de code de parrainage (referral code)
+- bouton pour rendre les options aléatoires (randomise button)
+- ajouter la possibilité d’extras comme ail, fumée, harissa, etc.
+- limite par e‑mail sur les commandes ?
+- améliorer l’apparence du frontend (make frontend pretty)
